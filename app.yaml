@@ -22,7 +22,8 @@ error_handlers:
 handlers:
 - url: /favicon.ico
   static_files: static/favicon.png
-  secure: optional
+  upload: static/favicon.png
+  secure: always
 
 - url: /static/[^e].*
   static_dir: static
