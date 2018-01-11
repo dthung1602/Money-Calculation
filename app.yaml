@@ -1,0 +1,37 @@
+# application: money-calculation-m1522
+# version: 0.1
+
+runtime: python27
+api_version: 1
+threadsafe: true
+default_expiration: "7d"
+
+builtins:
+- remote_api: on
+
+error_handlers:
+- error_code: over_quota
+  file: static/errors/over_quota.html
+
+- error_code: dos_api_denial
+  file: static/errors/dos_api_denial.html
+
+- error_code: timeout
+  file: static/errors/timeout.html
+
+handlers:
+- url: /favicon.ico
+  static_files: static/favicon.png
+  secure: optional
+
+- url: /static/[^e].*
+  static_dir: static
+  secure: always
+
+- url: /.*
+  script: main.app
+  secure: always
+
+libraries:
+- name: jinja2
+  version: latest
