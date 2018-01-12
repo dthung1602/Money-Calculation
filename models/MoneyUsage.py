@@ -1,27 +1,42 @@
-class MoneyUsage(db.Model):
-    buyer_id = db.IntegerProperty(required=True)
-    month_id = db.IntegerProperty(required=True)
+from math import ceil
 
-    last_month_left = db.FloatProperty(required=True)
-    next_month_left = db.FloatProperty(required=True)
+from google.appengine.ext import ndb
 
-    money_spend = db.IntegerProperty(required=True)
-    money_to_pay = db.FloatProperty(required=True)
-    roundup = db.IntegerProperty(required=True)
 
-    @staticmethod
-    def get_usage_in_month(month):
-        return db.GqlQuery("SELECT * FROM MoneyUsage WHERE month_id={}".format(month.key().id()))
+def compute_next_month_left(money_usage):
+    # calculate next month left
+    value = money_usage.money_round_up - money_usage.money_to_pay
 
-    @staticmethod
-    def update(good):
-        avg_price = good.price * 1.0 / Buyer.get_number_of_buyers()
-        for usage in db.GqlQuery("SELECT * FROM MoneyUsage WHERE month_id={}".format(good.month_id)):
-            usage.money_to_pay += avg_price
-            if usage.buyer_id == good.buyer:
-                usage.money_spend += good.price
-                usage.money_to_pay -= good.price
-            usage.roundup = round_up10(usage.money_to_pay)
-            usage.next_month_left = usage.roundup - usage.money_to_pay
-            usage.put()
-        sleep(0.8)
+    # if next month exist, update next month
+    next_month = money_usage.parent().next_month.get()
+    if next_month:
+        next_month.last_month_left = value
+
+    return value
+
+
+def compute_money_spend(money_usage):
+    return sum(item.price for item in money_usage.parent().items if item.buyer == money_usage.person)
+
+
+def compute_money_to_pay(money_usage):
+    return money_usage.parent().average - money_usage.money_spend - money_usage.last_month_left
+
+
+def compute_round_up(money_usage):
+    return int(ceil(money_usage.money_to_pay / 10.0) * 10)
+
+
+class MoneyUsage(ndb.Model):
+    """
+        Summarize spending of a buyer in a month
+        Each instance needs to have a Month instance as parent
+    """
+    person = ndb.KeyProperty(required=True)
+
+    last_month_left = ndb.FloatProperty(required=True)
+    next_month_left = ndb.ComputedProperty(compute_next_month_left)
+
+    money_spend = ndb.ComputedProperty(compute_money_spend)  # actual spending in month
+    money_to_pay = ndb.ComputedProperty(compute_money_to_pay)  # money to pay, after subtracting last month left, ...
+    money_round_up = ndb.ComputedProperty(compute_round_up)  # actual money to pay, round up for convenience

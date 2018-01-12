@@ -1,6 +1,8 @@
-class Good(db.Model):
-    month_id = db.IntegerProperty(required=True)
-    date = db.DateTimeProperty(auto_now_add=True)
-    price = db.IntegerProperty(required=True)
-    what = db.StringProperty(required=True)
-    buyer = db.IntegerProperty(required=True)
+from google.appengine.ext import ndb
+
+
+class Item(ndb.Model):
+    date = ndb.DateTimeProperty(auto_now_add=True)
+    buyer = ndb.KeyProperty(required=True)
+    price = ndb.IntegerProperty(required=True)
+    what = ndb.StringProperty(required=True)
