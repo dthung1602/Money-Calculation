@@ -4,5 +4,7 @@
 from handlers import *
 
 route_list = [
-    ("/", BaseHandler.Handler)
+    ("/(home)?", Home.HomeHandler),
+    ("/newmonth", NewMonth.NewMonthHandler),
+    ("/month/(.*)", MonthHandler.MonthHandler)
 ]

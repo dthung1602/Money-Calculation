@@ -14,8 +14,7 @@ class Handler(webapp2.RequestHandler):
 
     @staticmethod
     def render_str(template, **kwargs):
-        t = jinja_env.get_template(template)
-        return t.render(kwargs)
+        return jinja_env.get_template(template).render(**kwargs)
 
     def render(self, template, **kwargs):
         self.write(self.render_str(template, **kwargs))

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block heading %}
+
+<h1 style="padding-bottom:25px;padding-left:50px">New month</h1>
+<p style="text-align:right;padding-right:30px;font-size:100%;margin-bottom:0"><i>version 2.1</i></p>
+
+{% endblock %}
+
+{% block content %}
+
+<!--------------------------errors-------------------------->
+{% if error %}
+<br><br>
+<div class="alert alert-danger">
+    <strong>Error!</strong> {{error}}
+</div>
+<br><br><br>
+{% endif %}
+
+<form method="post" class="form-horizontal">
+    <h2>{{month}}</h2>
+    <p>Start date: {{start_date}}</p>
+    <br>
+
+    <div class="form-group">
+        <label class="control-label col-sm-2">People in this month:</label>
+        <br><br>
+        {% for person in people %}
+        <div class="col-sm-10">
+            <input type="checkbox" name="people" value="{{person.key.urlsafe()}}"> {{person.name}}
+        </div>
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+    </div>
+</form>
+
+
+{% endblock %}
