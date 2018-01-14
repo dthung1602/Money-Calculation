@@ -100,13 +100,13 @@
 
 
 <!--------------------------------- summarize ------------------------------------>
-<table class="table" style="font-size:275%;color: #9c9c9c; margin-bottom: 0">
+<table class="table" style="font-size:275%;color: #9c9c9c; margin-bottom: 0; background: #f3f3f3">
     <tr>
-        <td width="40%" onmouseenter="this.style.background='#f3f3f3'" onmouseleave="this.style.background='white'">
+        <td width="40%" onmouseenter="this.style.background='white'" onmouseleave="this.style.background='#f3f3f3'">
             <span style="margin-right: 40px; font-size: 115%">&nbsp;&nbsp;TOTAL</span>
             <span>{{format_number(month.spend * 1000)[0]}}</span>
         </td>
-        <td onmouseenter="this.style.background='#f3f3f3'" onmouseleave="this.style.background='white'">
+        <td onmouseenter="this.style.background='white'" onmouseleave="this.style.background='#f3f3f3'">
             <span style="margin-right: 40px; font-size: 115%">&nbsp;&nbsp;AVERAGE</span>
             <span>{{format_number(month.average * 1000)[0]}}.</span>
             <span style="font-size:75%">{{format_number(month.average * 1000)[1]}}</span>
