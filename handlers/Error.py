@@ -61,9 +61,3 @@ def handler_5xx(code):
 
 error_handlers = {i: handler_4xx(i) for i in error_4xx_names}
 error_handlers.update({i: handler_5xx(i) for i in error_5xx_names})
-# print("----------------------------------")
-# print(error_handlers)
-# print({i: handler_4xx(i) for i in error_4xx_names})
-# for i in error_4xx_names:
-#     print(i)
-# print("----------------------------------")

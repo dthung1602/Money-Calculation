@@ -87,7 +87,6 @@ class MonthHandler(Handler):
             errors.append("Price must be a positive integer")
 
         if len(errors) > 0:
-            print(errors)
             self.render_month(month, errors)
             return
 

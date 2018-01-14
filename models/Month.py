@@ -60,7 +60,7 @@ class Month(ndb.Model):
 
         # new month
         new_month = Month(
-            prev_month=prev_month.key,
+            prev_month=prev_month.key if prev_month else None,
             next_month=None,
             people=people_keys,
             money_usages=[],
