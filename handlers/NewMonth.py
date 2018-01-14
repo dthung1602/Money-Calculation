@@ -9,10 +9,26 @@ class NewMonthHandler(Handler):
     """Handle request for creating new month"""
 
     def render_new_month(self, **kwargs):
+        # new month info
         now = datetime.now()
         month = now.strftime("%B %Y")
         start_date = now.strftime("%d/%m/%y")
-        self.render("newmonth.html", month=month, start_date=start_date, people=Person.get_all(), **kwargs)
+        people = Person.get_all()
+
+        # prev month
+        prev_month = Month.get_current_month()
+        if prev_month and not prev_month.time_end:
+            # convert people key to name
+            prev_month.people_name = []
+            for person_key in prev_month.people:
+                for person in people:
+                    if person.key == person_key:
+                        prev_month.people_name.append(person.name)
+            prev_month.people_name = ", ".join(prev_month.people_name)
+
+        # render html
+        self.render("newmonth.html", month=month, start_date=start_date,
+                    people=people, prev_month=prev_month, **kwargs)
 
     def get(self):
         self.render_new_month()

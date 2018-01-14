@@ -3,7 +3,8 @@
 {% block heading %}
 
 <h1 style="padding-bottom:25px;padding-left:50px">Monthly money calculation</h1>
-<p style="text-align:right;padding-right:30px;font-size:100%;margin-bottom:0"><i>version 2.1</i></p>
+<div style="text-align:right;padding-right:40px"><p class="badge" style="background-color:green;font-size:110%">
+    Version 3.0</p></div>
 
 {% endblock %}
 
@@ -12,29 +13,38 @@
 <!--------------------------errors-------------------------->
 {% for er in error %}
 <br><br>
-<div class="alert alert-danger">
-    <strong>Error!</strong> {{error}}
+<div class="alert alert-danger" style="text-align: left">
+    <img src="/static/images/error.png" height="55px">
+    <strong style="font-size:150%;margin-left: 20px">ERROR!</strong>
+    <span style="font-size:150%;margin-left: 30px">{{error}}</span>
 </div>
 <br><br>
 {% endfor %}
 <br>
 
-<!------------------------list all months------------------->
 {% if months|length > 0 %}
+<!------------------------list all months------------------->
 <div class="list-group">
     {% for m in months %}
-    <a class="list-group-item" href="/month/{{m.key.urlsafe()}}">
+    <a class="list-group-item" href="/month/{{m.key.urlsafe()}}"
+       {% if m.time_end == None %} style="background: #D9EDF7" {% endif %}>
         {{m.to_string_short()}} ({{m.to_string_long()}})
-        {% if m.time_end == None %}
-        <span class="badge" style="background-color:green">current month</span>
-        {% endif %}
+        <!--<span class="badge" style="background-color:green">current month</span>-->
     </a>
     {% endfor %}
 </div>
+<br>
 
-<!--------------------------new month------------------->
+<!--------------------------- new month ------------------------->
+<div class="alert alert-success" style="padding:30px 20px;font-size: 120%;text-align: left">
+    <button class="btn btn-success" style="text-align:right" onclick="window.location='/newmonth'">NEW MONTH</button>
+    <span style="font-size:120%; padding-left: 50px; padding-right: 5px">Click this button and fill the form to create
+        new month</span>
+</div>
+
+<!------------------first new month------------------->
 {% else %}
-<form method="get" action="/newmonth" class="alert alert-info" style="width:50%">
+<form method="get" action="/newmonth" class="alert alert-success" style="width:50%">
     <h4>There are currently no data.</h4>
     <h4> Click below button to add new month</h4>
     <button class="btn btn-success" style="margin-top:15px" >New month</button>

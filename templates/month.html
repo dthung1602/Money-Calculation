@@ -8,7 +8,7 @@
 <p style="padding-left:70px"><i>End date : {{month.time_end.strftime("%d/%m/%y")}}</i></p>
 {% endif %}
 <div style="text-align:right;padding-right:40px"><p class="badge" style="background-color:green;font-size:110%">
-    Version 2.1</p></div>
+    Version 3.0</p></div>
 
 {% endblock %}
 
@@ -16,34 +16,32 @@
 {% block content %}
 
 <!-----------------------links----------------------------->
-<div style="padding:30px; text-align:center">
-    {% if month.prev_month %}
-    <a href="/month/{{month.prev_month.urlsafe()}}">
-        <button class="btn btn-warning">PREV</button>
-    </a>
-    {% else %}
-    <button class="btn btn-warning" disabled>PREV</button>
-    {% endif %}
-
-    <a href="/home">
-        <button class="btn btn-warning">HOME</button>
-    </a>
-
-    {% if month.next_month %}
-    <a href="/month/{{month.next_month.urlsafe()}}">
-        <button class="btn btn-warning">NEXT</button>
-    </a>
-    {% else %}
-    <button class="btn btn-warning" disabled>NEXT</button>
-    {% endif %}
+<div align="center">
+    <div class="btn-group" style="padding:30px; text-align:center">
+        {% if month.prev_month %}
+        <button class="btn btn-warning" onclick="window.location='/month/{{month.prev_month.urlsafe()}}'">PREV</button>
+        {% else %}
+        <button class="btn btn-warning" disabled>PREV</button>
+        {% endif %}
+        <button class="btn btn-warning" onclick="window.location='/home'">HOME</button>
+        {% if month.next_month %}
+        <button class="btn btn-warning" onclick="window.location='/month/{{month.next_month.urlsafe()}}'">NEXT</button>
+        {% else %}
+        <button class="btn btn-warning" disabled>NEXT</button>
+        {% endif %}
+    </div>
 </div>
+<br><br>
+
 
 <!--------------------------error-------------------------->
 {% if errors %}
 <br>
 {% for error in errors %}
-<div class="alert alert-danger">
-    <strong>Error!</strong> {{error}}
+<div class="alert alert-danger" style="text-align: left">
+    <img src="/static/images/error.png" height="55px">
+    <strong style="font-size:150%;margin-left: 20px">ERROR!</strong>
+    <span style="font-size:150%;margin-left: 30px">{{error}}</span>
 </div>
 {% endfor %}
 <br><br><br>
@@ -166,30 +164,30 @@
     <strong style="font-size:120%; padding-left: 50px; padding-right: 5px">Warning!</strong>
     <span style="font-size:120%">No data can be added to this month after ending</span>
 </form>
-<br><br><br><br>
+{% elif not month.next_month %}
+<div class="alert alert-success" style="padding:30px 20px;font-size: 120%;text-align: left">
+    <button class="btn btn-success" style="text-align:right" onclick="window.location='/newmonth'">NEW MONTH</button>
+    <span style="font-size:120%; padding-left: 50px; padding-right: 5px">Click this button and fill the form to create
+        new month</span>
+</div>
 {% endif %}
+<br><br><br><br>
 
 <!-----------------------links----------------------------->
-<div style="padding:30px; text-align:center">
-    {% if month.prev_month %}
-    <a href="/month/{{month.prev_month.urlsafe()}}">
-        <button class="btn btn-warning">PREV</button>
-    </a>
-    {% else %}
-    <button class="btn btn-warning" disabled>PREV</button>
-    {% endif %}
-
-    <a href="/home">
-        <button class="btn btn-warning">HOME</button>
-    </a>
-
-    {% if month.next_month %}
-    <a href="/month/{{month.next_month.urlsafe()}}">
-        <button class="btn btn-warning">NEXT</button>
-    </a>
-    {% else %}
-    <button class="btn btn-warning" disabled>NEXT</button>
-    {% endif %}
+<div align="center">
+    <div class="btn-group" style="padding:30px; text-align:center">
+        {% if month.prev_month %}
+        <button class="btn btn-warning" onclick="window.location='/month/{{month.prev_month.urlsafe()}}'">PREV</button>
+        {% else %}
+        <button class="btn btn-warning" disabled>PREV</button>
+        {% endif %}
+        <button class="btn btn-warning" onclick="window.location='/home'">HOME</button>
+        {% if month.next_month %}
+        <button class="btn btn-warning" onclick="window.location='/month/{{month.next_month.urlsafe()}}'">NEXT</button>
+        {% else %}
+        <button class="btn btn-warning" disabled>NEXT</button>
+        {% endif %}
+    </div>
 </div>
 
 {% endblock %}
