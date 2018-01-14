@@ -18,10 +18,29 @@ class NewMonthHandler(Handler):
         self.render_new_month()
 
     def post(self):
-        """Create new month"""
-        try:
-            month = Month.new_month(self.request)
-        except ValueError as error:
-            self.render_new_month(error=error.message)
+        """Handle end month and create new month"""
+
+        action = self.request.get("action")
+
+        # create new month
+        if action == "NEW MONTH":
+            try:
+                # get & validate info in request
+                people_key_strings = self.request.get_all("people")
+                if len(people_key_strings) == 0:
+                    raise ValueError("There must be at least one person in a month.")
+                month = Month.new_month(people_key_strings)
+            except ValueError as error:
+                self.render_new_month(error=error.message)
+            else:
+                self.redirect("/month/" + month.key.urlsafe())
+
+        # just end month
+        elif action == "END MONTH":
+            month = Month.end_month()
+            if month:
+                self.redirect("/month/" + month.key.urlsafe())
+
+        # invalid action
         else:
-            self.redirect("/moneyM1522/" + month.key.urlsafe())
+            self.render_new_month(error="Invalid action")

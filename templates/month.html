@@ -18,7 +18,7 @@
 <!-----------------------links----------------------------->
 <div style="padding:30px; text-align:center">
     {% if month.prev_month %}
-    <a href="month/{{month.prev_month.urlsafe()}}">
+    <a href="/month/{{month.prev_month.urlsafe()}}">
         <button class="btn btn-warning">PREV</button>
     </a>
     {% else %}
@@ -39,14 +39,15 @@
 </div>
 
 <!--------------------------error-------------------------->
-{% if error %}
+{% if errors %}
 <br>
+{% for error in errors %}
 <div class="alert alert-danger">
     <strong>Error!</strong> {{error}}
 </div>
-<br><br>
+{% endfor %}
+<br><br><br>
 {% endif %}
-<br>
 
 <!--------------------------items buy in month-------------------------->
 <form method="post" class="panel panel-primary">
@@ -79,12 +80,12 @@
         {% if not month.time_end %}
         <tr style="background-color:#94D094">
             <td style="text-align:center; width:13%">
-                <input type="submit" name="action" value="Add" class="btn btn-success" style="text-align:center">
+                <input type="submit" name="action" value="ADD" class="btn btn-success" style="text-align:center">
             </td>
             <td><select name="buyer" required class="form-control">
                 <option>--select--</option>
                 {% for b in buyers %}
-                <option value={{b.key.urlsafe()}}>{{b.name}}</option>
+                <option value={{b.key}}>{{b.name}}</option>
                 {% endfor %}
             </select></td>
             <td><input name="what" required class="form-control" placeholder="Enter what have been bought"></td>
@@ -171,7 +172,7 @@
 <!-----------------------links----------------------------->
 <div style="padding:30px; text-align:center">
     {% if month.prev_month %}
-    <a href="month/{{month.prev_month.urlsafe()}}">
+    <a href="/month/{{month.prev_month.urlsafe()}}">
         <button class="btn btn-warning">PREV</button>
     </a>
     {% else %}
