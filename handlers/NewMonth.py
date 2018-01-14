@@ -8,6 +8,8 @@ from models.Person import Person
 class NewMonthHandler(Handler):
     """Handle request for creating new month"""
 
+    PAGE_TITLE = "New month"
+
     def render_new_month(self, **kwargs):
         # new month info
         now = datetime.now()
@@ -27,7 +29,7 @@ class NewMonthHandler(Handler):
             prev_month.people_name = ", ".join(prev_month.people_name)
 
         # render html
-        self.render("newmonth.html", month=month, start_date=start_date,
+        self.render("newmonth.html", month=month, start_date=start_date, page_title=self.PAGE_TITLE,
                     people=people, prev_month=prev_month, **kwargs)
 
     def get(self):
