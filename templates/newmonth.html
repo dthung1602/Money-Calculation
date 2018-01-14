@@ -74,18 +74,29 @@
 <!------------------------------ new month ------------------------------->
 <div class="panel panel-primary col-md-8" style="font-size:120%; padding: 0; margin-top: 60px">
     <div class="panel-heading">
-        <h4><strong>{{month}}</strong></h4>
+        <h4><strong>New month: {{month}}</strong></h4>
         <p>Start date: {{start_date}}</p>
     </div>
     <form method="post" class="form-horizontal panel-body" style="padding-left:30px"
           onsubmit="return confirm('Do you really want to end current month and create a new one?');">
         <label>People in this month:</label>
-        {% for person in people %}
-        <div style="margin:15px">
-            <input type="checkbox" name="people" value="{{person.key.urlsafe()}}">
-            <span style="padding:20px">{{person.name}}</span>
-        </div>
-        {% endfor %}
+        {% if prev_month %}
+            {% for person in people %}
+            <div style="margin:15px">
+                <input type="checkbox" name="people" value="{{person.key.urlsafe()}}"
+                       {% if person.key in prev_month.people %} checked {% endif %}>
+                <span style="padding:20px">{{person.name}}</span>
+            </div>
+            {% endfor %}
+        {% else %}
+            {% for person in people %}
+            <div style="margin:15px">
+                <input type="checkbox" name="people" value="{{person.key.urlsafe()}}">
+                <span style="padding:20px">{{person.name}}</span>
+            </div>
+            {% endfor %}
+        {% endif %}
+
         <div align="center">
             <button type="submit" name="action" value="NEW MONTH" class="btn btn-info">CREATE</button>
         </div>
