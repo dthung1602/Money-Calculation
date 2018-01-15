@@ -27,11 +27,29 @@ class MoneyUsage(ndb.Model):
     money_to_pay = ndb.FloatProperty(default=0.0, required=True)  # money to pay, after subtracting last month left, ...
     money_round_up = ndb.ComputedProperty(compute_round_up)  # actual money to pay, round up for convenience
 
-    def update(self, month, chain=False):
+    def update(self, month):
+        """
+            Recalculate properties of money usage
+            :param month: month object which self belongs to
+        """
+
         self.money_spend = sum(item.price for item in month.items if item.buyer == self.person)
         self.money_to_pay = month.average - self.money_spend - self.last_month_left
-        self.put()
 
-        # TODO
-        if chain:
-            pass
+    def update_chain(self, month, months):
+        """
+            Update money usage and last_month_left of next month
+            :param month: month object which self belongs to
+            :param months: list of month objects after this month
+
+        """
+        # update this month
+        self.update(month)
+
+        # update last_month_left
+        for next_month in months:  # search for next month contains the same person
+            if self.person in next_month.people:
+                for muo in next_month.muos:  # search for money usage object in that month of the same person
+                    if muo.person == self.person:
+                        muo.last_month_left = self.next_month_left
+                        return

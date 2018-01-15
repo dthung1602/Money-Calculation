@@ -44,6 +44,10 @@ class Month(ndb.Model):
 
     @classmethod
     def end_month(cls):
+        """
+            End current month if it is not ended
+            :return current month
+        """
         month = cls.get_current_month()
         if month and not month.time_end:
             month.time_end = datetime.now()
@@ -52,6 +56,8 @@ class Month(ndb.Model):
 
     @classmethod
     def new_month(cls, people_key_strings):
+        """ End current month, create and return a new month"""
+
         people_keys = [ndb.Key(urlsafe=url_string) for url_string in people_key_strings]
         people = ndb.get_multi(people_keys)
 
@@ -96,24 +102,45 @@ class Month(ndb.Model):
         ndb.sleep(0.7)
         return new_month
 
-    def update(self, chain=False):
+    def update(self):
+        """
+            Recalculate properties of month when items is modified
+        """
         self.spend = sum(item.price for item in self.items)
         self.average = self.spend * 1.0 / self.number_of_people
 
-        for money_usage in ndb.get_multi(self.money_usages):
-            money_usage.update(self, chain=chain)
-            money_usage.put()
+        mu = ndb.get_multi(self.money_usages)
+        for money_usage in mu:
+            money_usage.update(self)
+        ndb.put_multi(mu)
 
         self.put()
 
     def update_chain(self):
-        month = self
-        while month is not None:
-            month.update(chain=True)
-            month = month.next_month.get()
+        """Update this month and all months after it"""
+
+        # load all objects
+        months = Month.query().filter(Month.time_begin >= self.time_begin).fetch()
+        for month in months:
+            month.muos = ndb.get_multi(month.money_usages)  # get money usage objects
+
+        # update
+        for month in months:
+            month.spend = sum(item.price for item in month.items)
+            month.average = month.spend * 1.0 / month.number_of_people
+            for money_usage in self.money_usages:
+                money_usage.update_chain(month, months[months.index(month) + 1:])
+
+        # put
+        ndb.put_multi(months)
+        for month in months:
+            ndb.put_multi(month.muos)
+        ndb.sleep(1)
 
     @classmethod
     def update_all(cls):
-        months = cls.get_all()
-        if len(months) > 0:
-            months[-1].update_chain()
+        """Update all months, start from first month"""
+
+        first_month = cls.query().order(cls.time_begin).fetch(1)
+        if first_month:
+            first_month.update_chain()
