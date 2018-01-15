@@ -18,7 +18,7 @@ class MonthHandler(Handler):
             if month is None:
                 raise ValueError
         except:
-            self.render("4xx.html", code=404, error_name="Not found")
+            self.error(404)
         else:
             self.render_month(month)
 
@@ -107,7 +107,7 @@ class Buyer(object):
     def __init__(self, person, money_usage):
         self.name = person.name
         self.key = person.key.urlsafe()
-        self.spend = self.round_float(money_usage.money_spend)
+        self.spend = money_usage.money_spend
         self.last_month_left = self.round_float(money_usage.last_month_left)
         self.to_pay = self.round_float(money_usage.money_to_pay)
         self.round_up = money_usage.money_round_up

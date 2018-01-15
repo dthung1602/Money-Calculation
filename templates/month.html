@@ -158,9 +158,9 @@
 
 <!--------------------------------end month------------------------------------>
 {% if not month.time_end %}
-<form method="post" class="alert alert-danger" style="padding:30px 20px;font-size: 120%;text-align: left"
+<form method="post" class="alert alert-info" style="padding:30px 20px;font-size: 120%;text-align: left"
       onsubmit="return confirm('Do you really want to end this month?');">
-    <input type="submit" name="action" value="END MONTH" class="btn btn-danger" style="text-align:right">
+    <input type="submit" name="action" value="END MONTH" class="btn btn-primary" style="text-align:right">
     <strong style="font-size:120%; padding-left: 50px; padding-right: 5px">Warning!</strong>
     <span style="font-size:120%">No data can be added to this month after ending</span>
 </form>

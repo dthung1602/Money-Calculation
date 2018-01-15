@@ -14,9 +14,7 @@
 <div class="col-md-8" style="padding: 0; text-align: left">
     <div class="btn-group">
         <button class="btn btn-warning" onclick="window.location='/'">HOME</button>
-        {% if prev_month %}
-        <button class="btn btn-warning" onclick="window.location='/month/{{prev_month.key.urlsafe()}}'">CURRENT MONTH</button>
-        {% endif %}
+        <button class="btn btn-warning" onclick="window.location='/newest'">CURRENT MONTH</button>
     </div>
 </div>
 
@@ -43,7 +41,7 @@
         </tr>
         <tr>
             <td>End date</td>
-            <td>today</td>
+            <td>{{prev_month.time_to_end.strftime("%d/%m/%y")}} (today)</td>
         </tr>
         <tr>
             <td>People in this month</td>

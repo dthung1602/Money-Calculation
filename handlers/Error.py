@@ -1,10 +1,15 @@
 #
 #  Contains handlers for common errors like 4xx, 5xx
 #
+
+import os
 import sys
 import traceback
 
-from BaseHandler import jinja_env
+import jinja2
+
+template_dir = os.path.join(os.path.dirname(__file__), "../templates")
+jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader(template_dir), autoescape=True)
 
 error_4xx_names = {
     400: "Bad Request",
@@ -59,5 +64,6 @@ def handler_5xx(code):
     return handler
 
 
+# create list of error handlers to be used in main.py
 error_handlers = {i: handler_4xx(i) for i in error_4xx_names}
 error_handlers.update({i: handler_5xx(i) for i in error_5xx_names})

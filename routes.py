@@ -7,5 +7,8 @@ route_list = [
     ("/(home)?", Home.HomeHandler),
     ("/newmonth", NewMonth.NewMonthHandler),
     ("/month/(.*)", MonthHandler.MonthHandler),
-    ("/newest", NewestMonth.NewestMonthHandler)
+    ("/newest", NewestMonth.NewestMonthHandler),
+    ("/admin/login", Authentication.Login),
+    ("/admin/logout", Authentication.Logout),
+    ("/admin", Admin.AdminHandler),
 ]

@@ -21,6 +21,7 @@ class NewMonthHandler(Handler):
         prev_month = Month.get_current_month()
         if prev_month and not prev_month.time_end:
             # convert people key to name
+            prev_month.time_to_end = now
             prev_month.people_name = []
             for person_key in prev_month.people:
                 for person in people:
