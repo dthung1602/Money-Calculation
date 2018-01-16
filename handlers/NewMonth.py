@@ -42,7 +42,7 @@ class NewMonthHandler(Handler):
         action = self.request.get("action")
 
         # create new month
-        if action == "NEW MONTH":
+        if action == "new":
             try:
                 # get & validate info in request
                 people_key_strings = self.request.get_all("people")
@@ -55,7 +55,7 @@ class NewMonthHandler(Handler):
                 self.redirect("/month/" + month.key.urlsafe())
 
         # just end month
-        elif action == "END MONTH":
+        elif action == "end":
             month = Month.end_month()
             if month:
                 self.redirect("/month/" + month.key.urlsafe())
