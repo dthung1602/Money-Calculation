@@ -25,19 +25,21 @@ class MonthHandler(Handler):
     def post(self, month_key):
         """Handle adding new item and end month"""
         action = self.request.get("action")
+        print(self.request.get("what"))
+        print("ACTION: " + str(action))
 
         # create new month
-        if action == "ADD":
+        if action == "add":
             self.add_item()
         # end month
-        elif action == "END MONTH":
+        elif action == "end":
             month = Month.end_month()
             if month:
                 self.redirect("/month/" + month.key.urlsafe())
         else:
             self.redirect("/home")
 
-    def render_month(self, month, errors=None):
+    def render_month(self, month):
         """Render money_current_month.html"""
         people = [person_key.get() for person_key in month.people]
         money_usages = [money_usage.get() for money_usage in month.money_usages]
@@ -48,7 +50,7 @@ class MonthHandler(Handler):
 
         buyers = [Buyer(person, money_usage) for person, money_usage in zip(people, money_usages)]
 
-        self.render("month.html", errors=errors, format_number=format_number,
+        self.render("month.html", format_number=format_number,
                     month=month, buyers=buyers, page_title=month.to_string_short())
 
     def add_item(self):
@@ -67,6 +69,9 @@ class MonthHandler(Handler):
         # check for empty fields
         if None in [price, what, buyer]:
             errors.append("Please fill all information")
+        # check empty str of what
+        if what == "":
+            errors.append("Please enter what have been bought")
         # check if buyer exists
         try:
             buyer = Key(urlsafe=buyer)
@@ -75,6 +80,8 @@ class MonthHandler(Handler):
         except Exception:
             errors.append("Invalid buyer")
         # evaluate price
+        print(price)
+        print(eval(price))
         try:
             if not re.match("^[0-9 \-+*/()]+$", price):
                 raise SyntaxError
@@ -87,7 +94,9 @@ class MonthHandler(Handler):
             errors.append("Price must be a positive integer")
 
         if len(errors) > 0:
-            self.render_month(month, errors)
+            print(";".join(errors))
+            self.response.status = 409
+            self.write(";".join(errors))
             return
 
         # ------------- put to database ----------------

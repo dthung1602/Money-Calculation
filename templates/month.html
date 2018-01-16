@@ -33,22 +33,8 @@
 </div>
 <br><br>
 
-
-<!--------------------------error-------------------------->
-{% if errors %}
-<br>
-{% for error in errors %}
-<div class="alert alert-danger" style="text-align: left">
-    <img src="/static/images/error.png" height="55px">
-    <strong style="font-size:150%;margin-left: 20px">ERROR!</strong>
-    <span style="font-size:150%;margin-left: 30px">{{error}}</span>
-</div>
-{% endfor %}
-<br><br><br>
-{% endif %}
-
 <!--------------------------items buy in month-------------------------->
-<form method="post" class="panel panel-primary">
+<div class="panel panel-primary">
     <div class="panel-heading"><h4><strong>Items</strong></h4></div>
     <table class="table table-striped table-bordered table-hover">
         <!------------------------head-------------------------------->
@@ -62,7 +48,7 @@
         </thead>
 
         <!------------------------items buy in month-------------------------------->
-        <tbody>
+        <tbody id="items">
         {% for item in month.items %}
         <tr>
             <td style="text-align:center">{{item.date.strftime("%d/%m/%y")}}</td>
@@ -77,47 +63,50 @@
         <tfoot>
         {% if not month.time_end %}
         <tr style="background-color:#94D094">
-            <td style="text-align:center; width:13%">
-                <input type="submit" name="action" value="ADD" class="btn btn-success" style="text-align:center">
+            <td style="text-align: center">
+                <button class="btn btn-success" onclick="add()">Add</button>
             </td>
-            <td><select name="buyer" required class="form-control">
-                <option>--select--</option>
-                {% for b in buyers %}
-                <option value={{b.key}}>{{b.name}}</option>
-                {% endfor %}
-            </select></td>
-            <td><input name="what" required class="form-control" placeholder="Enter what have been bought"></td>
+            <td>
+                <select id="buyer" title="Buyer" class="form-control" required>
+                    {% for b in buyers %}
+                    <option value="{{b.key}}" id="{{b.key}}">{{b.name}}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td>
+                <input id="what" required class="form-control" placeholder="Enter what have been bought">
+            </td>
             <td style="width:25%">
-                <input name="price" title="Arithmetic expression with + - * / ()" pattern="^[0-9 \+\-\*\/\(\)]+$"
+                <input id="price" title="Arithmetic expression with + - * / ()" pattern="^[0-9 \+\-\*\/\(\)]+$"
                        required class="form-control" placeholder="Arithmetic expression with + - * / ()">
             </td>
         </tr>
         {% endif %}
         </tfoot>
     </table>
-</form>
-<br><br><br>
+</div>
 
+<!--------------------------error-------------------------->
+<div id="errors"></div>
 
 <!--------------------------------- summarize ------------------------------------>
-<table class="table" style="font-size:275%;color: #9c9c9c; margin-bottom: 0; background: #f3f3f3">
+<table class="table" style="font-size:275%;color: #9c9c9c; margin-bottom: 0; background: #f3f3f3; margin-top: 90px">
     <tr>
         <td width="40%" onmouseenter="this.style.background='white'" onmouseleave="this.style.background='#f3f3f3'">
             <span style="margin-right: 40px; font-size: 115%">&nbsp;&nbsp;TOTAL</span>
-            <span>{{format_number(month.spend * 1000)[0]}}</span>
+            <span id="total">{{format_number(month.spend * 1000)[0]}}</span>
         </td>
         <td onmouseenter="this.style.background='white'" onmouseleave="this.style.background='#f3f3f3'">
             <span style="margin-right: 40px; font-size: 115%">&nbsp;&nbsp;AVERAGE</span>
-            <span>{{format_number(month.average * 1000)[0]}}.</span>
-            <span style="font-size:75%">{{format_number(month.average * 1000)[1]}}</span>
+            <span id="average">{{format_number(month.average * 1000)[0]}}.</span>
+            <span id="average-float" style="font-size:75%">{{format_number(month.average * 1000)[1]}}</span>
         </td>
     </tr>
 </table>
 <hr style="margin-top: 0; color: #DDDDDD; border-width: 3px">
-<br><br><br><br>
 
 <!-----------------------------payments------------------------------>
-<div class="panel panel-primary">
+<div class="panel panel-primary" style="margin-top: 90px">
     <div class="panel-heading"><h4><strong>Payments</strong></h4></div>
     <table class="table table-striped table-bordered table-hover">
         <thead>
@@ -158,12 +147,11 @@
 
 <!--------------------------------end month------------------------------------>
 {% if not month.time_end %}
-<form method="post" class="alert alert-info" style="padding:30px 20px;font-size: 120%;text-align: left"
-      onsubmit="return confirm('Do you really want to end this month?');">
-    <input type="submit" name="action" value="END MONTH" class="btn btn-primary" style="text-align:right">
+<div class="alert alert-info" style="padding:30px 20px;font-size: 120%;text-align: left">
+    <button name="action" value="end" class="btn btn-primary" style="text-align:right">END MONTH</button>
     <strong style="font-size:120%; padding-left: 50px; padding-right: 5px">Warning!</strong>
     <span style="font-size:120%">No data can be added to this month after ending</span>
-</form>
+</div>
 {% elif not month.next_month %}
 <div class="alert alert-success" style="padding:30px 20px;font-size: 120%;text-align: left">
     <button class="btn btn-success" style="text-align:right" onclick="window.location='/newmonth'">NEW MONTH</button>
@@ -189,5 +177,115 @@
         {% endif %}
     </div>
 </div>
+
+{% endblock %}
+
+{% block script %}
+
+<!--<script src="/static/js/month.js"></script>-->
+<script>
+    var numberOfPeope = {{ buyers | length }};
+    // var people = {
+    //     {% for buyer in buyers %}
+    //     {{buyer.key}}: "{{buyer.name}}",
+    //     {% endfor %}
+    // };
+    // alert("obj");
+
+    function addItemToTable(buyer_key, price) {
+        // get info
+        var buyer_name = document.getElementById(buyer_key).innerText;
+        var what = document.getElementById("what").value;
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth() + 1;
+        var yyyy = today.getFullYear();
+        if (dd < 10) dd = "0" + dd;
+        if (mm < 10) mm = "0" + mm;
+        var date = dd + "/" + mm + "/" + (yyyy % 1000);
+
+        // add item to table
+        var trTag = "<tr><td style='text-align:center'>" +
+            date + "</td><td>" +
+            buyer_name + "</td><td>" +
+            what + "</td><td style='text-align:right'>" +
+            price + "</td></tr>";
+        document.getElementById("items").innerHTML += trTag;
+
+        // clear old item info
+        document.getElementById("buyer").value = "";
+        document.getElementById("what").value = "";
+        document.getElementById("price").value = "";
+    }
+
+    function updateSummarize(itemPrice) {
+        alert("update");
+        var totalField = document.getElementById("total");
+        var total = parseInt(totalField.innerHTML.replace(/\s/g, '')) + itemPrice * 1000;
+        var average_int = Math.floor(total / numberOfPeope);
+        var average_float = (total / numberOfPeope - average_int).toString().slice(1, 3);
+        while (average_float.length < 2)
+            average_float += "0";
+
+        totalField.innerHTML = total.toLocaleString().replace(/,/g, " ");
+        document.getElementById("average").innerHTML = average_int.toLocaleString().replace(/,/g, " ") + ".";
+        document.getElementById("average-float").innerHTML = average_float;
+    }
+
+    function updateMoneyUsages() {
+
+    }
+
+    function addSuccess() {
+        var buyer_key = document.getElementById("buyer").value;
+        var price = eval(document.getElementById("price").value);
+
+        addItemToTable(buyer_key, price);
+        updateSummarize(price);
+        updateMoneyUsages();
+    }
+
+    function displayError(content) {
+        var divTag = document.getElementById("errors");
+        var errors = content.split(";");
+        var errorsFormatted = "";
+        for (var i = 0; i < errors.length; i++) {
+            errorsFormatted += "<span style='font-size:150%;margin-left: 30px'>" + errors[i] + "</span><br>"
+        }
+        divTag.innerHTML =
+            "<div class='alert alert-danger' style='text-align: left; margin-top: 30px'>" +
+            "<table><tr><td>" +
+            "<img src='/static/images/error.png' height='55px'>" +
+            "<strong style='font-size:150%;margin-left: 20px'>ERROR!</strong>" +
+            "</td><td style='font-size: 90%'>" +
+            errorsFormatted +
+            "</td></tr></table></div>"
+    }
+
+
+    function add() {
+        var buyer = document.getElementById("buyer").value;
+        var what = document.getElementById("what").value;
+        var price = document.getElementById("price").value;
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState !== 4)
+                return;
+            if (this.status === 200)
+                addSuccess();
+            else if (this.status === 409)
+                displayError(xhttp.responseText)
+        };
+        xhttp.open("POST", "/month/");
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xhttp.send(
+            "action=add&" +
+            "buyer=" + encodeURI(buyer) + "&" +
+            "what=" + encodeURI(what) + "&" +
+            "price=" + encodeURI(price)
+        )
+    }
+
+</script>
 
 {% endblock %}
