@@ -74,7 +74,7 @@
     <a onclick="openTab('admin')">Admin</a>
 </div>
 
-<div id="tab-welcome" class="tab">
+<div hidden id="tab-welcome" class="tab">
     <h2>WELCOME</h2>
     <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Ja in zu unbemerkt schwachem zu uberhaupt.
         Diesem feucht dachte bi laufen begann wisset im es in. Plaudernd an eintreten ja mitwisser tanzmusik. Haus
@@ -240,30 +240,39 @@
     <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
     </p>
 </div>
-<div hidden id="tab-admin" class="tab">
-    <h2>ITEMS</h2>
+<div id="tab-admin" class="tab">
+    <h2>ADMIN ACCOUNT</h2>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
+    <div class="panel panel-default col-sm-10" style="font-size:120%; padding: 0; margin-top: 60px">
+        <div class="panel-heading">
+            <h4><strong>Change password</strong></h4>
+            <p>Last modified: {{account.last_modified.strftime("%d/%m/%y")}}</p>
+        </div>
+        <div class="form-horizontal panel-body" style="padding-left:30px">
+            <div class="form-group">
+                <label class="control-label col-sm-3" for="password">New password</label>
+                <div class="col-sm-5">
+                    <input class="form-control" id="password" type="password" onkeyup="passwordStrength()">
+                </div>
+                <div id="password-error" class="col-sm-4"></div>
+            </div>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Magd er nein es gewi trug se vier hort je.
-        Eleonora kurioses lachelte was mut gefallts. Schwarzes em ernsthaft es gewachsen lieblinge ernstlich da wu.
-        Wo bi se spiegel schlief mi erzahlt. Die ausgeruht eck verharrte gut ton verlassen. Ist bei federdecke
-        mancherlei hufschmied. Mudigkeit gut zierliche her unendlich handwerke grundlich.
-    </p>
+            <div class="form-group">
+                <label class="control-label col-sm-3" for="re-password">Confirm password</label>
+                <div class="col-sm-5">
+                    <input class="form-control" id="re-password" type="password" onkeyup="validateRePassword()">
+                </div>
+                <div id="re-password-error" class="col-sm-4"></div>
+            </div>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
+            <div id="password-strength"></div>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Ort nur endigend erzahlte spielend hausherr
-        ihr schmales tadellos. Wu preisen so pa argerte gefallt wahrend schonen. Neu ich merken lieber nur lebtag
-        lehnte. Nun gedacht gelernt ich spielte glatten gerbers. So es fest denn kann sein welt. Storen uhr vom
-        handen sei soviel ich minder. Heut fur ehe lie warm aber weg. Jahre von und bette wer kommt tur. Je wobei
-        tiefe um am suppe danke. Gelben fallen ei seinem du sorgen.
-    </p>
+            <div align="center" style="margin-top: 30px">
+                <button class="btn" onclick="changePassword()">Change</button>
+            </div>
+        </div>
+    </div>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
 </div>
 
 <script>
@@ -272,6 +281,109 @@
         for (var i = 0; i < tabs.length; i++)
             tabs[i].hidden = true;
         document.getElementById("tab-" + tabName).hidden = false;
+    }
+
+    function changePassword() {
+
+    }
+
+    function isASCII(str) {
+        for (var i = 0, n = str.length; i < n; i++) {
+            if (str.charCodeAt(i) > 255)
+                return false;
+        }
+        return true;
+    }
+
+    function validatePassword(password) {
+        var tag = document.getElementById("password-error");
+        if (!isASCII(password))
+            tag.innerHTML = "<span style='color: red'>Password must contain only ASCII characters</span>";
+        else if (password.length === 0)
+            tag.innerHTML = "<span style='color: red'>Password must not be empty</span>";
+        else {
+            tag.innerHTML = "";
+            return true;
+        }
+        return false;
+    }
+
+    function passwordStrength() {
+        var password = document.getElementById("password").value;
+        var strengthDiv = document.getElementById("password-strength");
+
+        validateRePassword();
+
+        if (!validatePassword(password)) {
+            strengthDiv.innerText = "";
+            return;
+        }
+
+        // calculate password strength
+        var score = password.length; // 1p for each character
+        var regex = [/[a-z]/, /[A-Z]/, /[0-9]/, /[~`!@#$%^&*()_\-+={[}\]|\\:;"'<,>.?/]/];
+        for (var i = 0, n = regex.length; i < n; i++)
+            if (regex[i].test(password))
+                score += i + 2;
+
+        // classify
+        var strength, color;
+        var levels = [
+            {
+                score: 7,
+                strength: "Very weak",
+                color: "red"
+            },
+            {
+                score: 10,
+                strength: "Weak",
+                color: "orange"
+            },
+            {
+                score: 13,
+                strength: "Medium",
+                color: "yellow"
+            },
+            {
+                score: 16,
+                strength: "Strong",
+                color: "green"
+            },
+            {
+                score: Number.POSITIVE_INFINITY,
+                strength: "Very Strong",
+                color: "blue"
+            }
+        ];
+
+        for (i = 0; i < levels.length; i++) {
+            if (score < levels[i].score) {
+                strength = levels[i].strength;
+                color = levels[i].color;
+                break;
+            }
+        }
+
+        // display
+        strengthDiv.innerHTML =
+            "<div class='form-group'>" +
+            "<label class='control-label col-sm-3' for='password-strength'>Password strength</label>" +
+            "<div class='col-sm-5'>" +
+            "<span id='password-strength' style='color: " + color + "'><strong>" + strength + "</strong></span>" +
+            "</div></div>"
+    }
+
+    function validateRePassword() {
+        var str = document.getElementById("re-password").value;
+        var match = document.getElementById("password").value === str;
+        if (match) {
+            if (str.length > 0)
+                document.getElementById("re-password-error").innerHTML = "<span style='color: forestgreen'>Matched</span>";
+            else
+                document.getElementById("re-password-error").innerHTML = "<span style='color: red'>Please confirm password</span>";
+        } else {
+            document.getElementById("re-password-error").innerHTML = "<span style='color: red'>Password does not match</span>";
+        }
     }
 </script>
 

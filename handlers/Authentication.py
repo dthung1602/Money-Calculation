@@ -41,8 +41,10 @@ class Logout(Handler):
 
     def get(self):
         self.response.delete_cookie("login")
+        self.response.delete_cookie("redirect")
         self.redirect("/")
 
     def post(self):
         self.response.delete_cookie("login")
+        self.response.delete_cookie("redirect")
         self.redirect("/")

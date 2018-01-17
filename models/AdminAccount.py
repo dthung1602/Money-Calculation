@@ -13,6 +13,7 @@ class AdminAccount(ndb.Model):
     salt = ndb.StringProperty(required=True)
     hashed_password = ndb.StringProperty(required=True)
     hash_algorithm = ndb.StringProperty(required=True)
+    last_modified = ndb.DateTimeProperty(auto_now=True)
 
     @classmethod
     def is_defined(cls):
