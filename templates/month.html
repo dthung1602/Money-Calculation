@@ -148,7 +148,8 @@
 <!--------------------------------end month------------------------------------>
 {% if not month.time_end %}
 <form action="/newmonth" method="post" class="alert alert-info"
-      style="padding:30px 20px;font-size: 120%;text-align: left">
+      style="padding:30px 20px;font-size: 120%;text-align: left"
+      onsubmit="return confirm('Are you sure that you want to end this month?')">
     <button name="action" value="end" type="submit" class="btn btn-primary" style="text-align:right">END MONTH</button>
     <strong style="font-size:120%; padding-left: 50px; padding-right: 5px">Warning!</strong>
     <span style="font-size:120%">No data can be added to this month after ending</span>
