@@ -5,6 +5,7 @@
 app_config = {
     "debug": True,
     "app-name": "money-calculation-m1522",
-    "login-password": "M15.22",
-    "login-cookie": "rUlEpeaoaW/oO5kpyrh9D$r|'",
+    "default-login-password": "password",
+    "default-login-salt-length": 25,
+    "hashing-algorithm": "sha256",
 }

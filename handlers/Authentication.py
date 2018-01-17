@@ -1,24 +1,11 @@
-import random
-import string
-
-import webapp2
-
 from BaseHandler import Handler
-from config import app_config
-
-SECRET_COOKIE = app_config["login-cookie"]
-
-
-def create_login_cookie():
-    """Used to create secret cookie in app_config"""
-    s = string.ascii_letters + string.digits + string.punctuation
-    length = 25
-    return "".join([random.choice(s) for _ in xrange(length)])
+from models.AdminAccount import AdminAccount
 
 
 def is_login(handler):
     """Check if user has the right login cookie"""
-    return handler.request.cookies.get("login", "") == SECRET_COOKIE
+    # login cookie has the value of the hashed password
+    return AdminAccount.get().hashed_password == handler.request.cookies.get("login", "")
 
 
 class Login(Handler):
@@ -35,12 +22,17 @@ class Login(Handler):
             self.render("login_success.html")
         else:
             password = self.request.get("password")
-            if password != webapp2.get_app().config["login-password"]:
+            admin_account = AdminAccount.get()
+
+            if not admin_account.validate_password(password):
                 self.render("login.html", error="Wrong password")
             else:
-                redirect_page = self.request.cookies.get("redirect", "/admin/login")
+                redirect_page = self.request.cookies.get("redirect", "/admin")
+                print(">>>>>>>")
+                print(redirect_page)
                 self.response.delete_cookie("redirect")
-                self.response.set_cookie("login", SECRET_COOKIE)
+                # login cookie has the value of the hashed password
+                self.response.set_cookie("login", admin_account.hashed_password)
                 self.redirect(redirect_page)
 
 
