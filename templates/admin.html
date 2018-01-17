@@ -1,24 +1,278 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <style>
+        .sidenav {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #2E6DA4;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 30px;
+        }
 
-{% block heading %}
+        .sidenav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 20px;
+            color: #dadada;
+            display: block;
+            transition: 0.3s;
+        }
 
-<h1 style="padding-bottom:25px;padding-left:50px">Administrator page</h1>
-<div style="text-align:right;padding-right:40px"><p class="badge" style="background-color:green;font-size:110%">
-    Version 3.0</p></div>
+        .sidenav a:hover {
+            background: white;
+            color: #2E6DA4;
+        }
 
-{% endblock %}
+        .sidenav h1 {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 30px;
+            color: #ffffff;
+            display: block;
+            transition: 0.3s;
+        }
 
+        .tab {
+            margin-left: 250px;
+            padding: 20px 20px 50px 40px;
+        }
 
-{% block content %}
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
 
-<!------------------------- links --------------------------->
-<div class="col-md-8" style="padding: 0; text-align: left">
-    <div class="btn-group">
-        <button class="btn btn-warning" onclick="window.location='/'">HOME</button>
-        <button class="btn btn-warning" onclick="window.location='/newest'">CURRENT MONTH</button>
-    </div>
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="mySidenav" class="sidenav">
+    <h1>Administrator console</h1>
+    <hr>
+    <a href="/home">Home page</a>
+    <a href="/newest">Current month</a>
+    <a href="https://console.cloud.google.com/home/dashboard?project={{app_name}}">Cloud console</a>
+    <hr>
+    <a onclick="openTab('welcome')">Welcome</a>
+    <a onclick="openTab('people')">People</a>
+    <a onclick="openTab('months')">Months</a>
+    <a onclick="openTab('items')">Items</a>
+    <hr>
+    <a onclick="openTab('admin')">Admin</a>
 </div>
 
-HELLO ADMIN!
+<div id="tab-welcome" class="tab">
+    <h2>WELCOME</h2>
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Ja in zu unbemerkt schwachem zu uberhaupt.
+        Diesem feucht dachte bi laufen begann wisset im es in. Plaudernd an eintreten ja mitwisser tanzmusik. Haus
+        grob wenn lich duse gott oha weg. Sehet angst blies jahre komme eck bei man. Ob schurze da standen bereits
+        zu da. Dabei sto hande leber die ernst sehen was. Das eleganz ihn tod dichten klopfen beschlo schoner nie
+        alsbald. Wenns von hof jeden das ein nacht.
+    </p>
 
-{% endblock %}
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Gut gassen durren nun wirtin weg art hinaus
+        neckte. Davon ri zu gutes haute in zahne wesen waren. Ja drehte arbeit wo la ja kugeln. Ihr gepfiffen mir
+        ihn belustigt verweilen was. Neues abend fur gro nobel der statt den deine heran. Freundes eigentum lockigen
+        funkelte gelandes wir las uberging sag. Es ja denk brot da sein herd nahm blau. Schlief he beinahe wo
+        bessern.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Gut gassen durren nun wirtin weg art hinaus
+        neckte. Davon ri zu gutes haute in zahne wesen waren. Ja drehte arbeit wo la ja kugeln. Ihr gepfiffen mir
+        ihn belustigt verweilen was. Neues abend fur gro nobel der statt den deine heran. Freundes eigentum lockigen
+        funkelte gelandes wir las uberging sag. Es ja denk brot da sein herd nahm blau. Schlief he beinahe wo
+        bessern.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Gut gassen durren nun wirtin weg art hinaus
+        neckte. Davon ri zu gutes haute in zahne wesen waren. Ja drehte arbeit wo la ja kugeln. Ihr gepfiffen mir
+        ihn belustigt verweilen was. Neues abend fur gro nobel der statt den deine heran. Freundes eigentum lockigen
+        funkelte gelandes wir las uberging sag. Es ja denk brot da sein herd nahm blau. Schlief he beinahe wo
+        bessern.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Gut gassen durren nun wirtin weg art hinaus
+        neckte. Davon ri zu gutes haute in zahne wesen waren. Ja drehte arbeit wo la ja kugeln. Ihr gepfiffen mir
+        ihn belustigt verweilen was. Neues abend fur gro nobel der statt den deine heran. Freundes eigentum lockigen
+        funkelte gelandes wir las uberging sag. Es ja denk brot da sein herd nahm blau. Schlief he beinahe wo
+        bessern.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Gut gassen durren nun wirtin weg art hinaus
+        neckte. Davon ri zu gutes haute in zahne wesen waren. Ja drehte arbeit wo la ja kugeln. Ihr gepfiffen mir
+        ihn belustigt verweilen was. Neues abend fur gro nobel der statt den deine heran. Freundes eigentum lockigen
+        funkelte gelandes wir las uberging sag. Es ja denk brot da sein herd nahm blau. Schlief he beinahe wo
+        bessern.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Gut gassen durren nun wirtin weg art hinaus
+        neckte. Davon ri zu gutes haute in zahne wesen waren. Ja drehte arbeit wo la ja kugeln. Ihr gepfiffen mir
+        ihn belustigt verweilen was. Neues abend fur gro nobel der statt den deine heran. Freundes eigentum lockigen
+        funkelte gelandes wir las uberging sag. Es ja denk brot da sein herd nahm blau. Schlief he beinahe wo
+        bessern.
+    </p>
+
+</div>
+<div hidden id="tab-people" class="tab">
+    <h2>PEOPLE</h2>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Keine angst wurde eck dahin las brief einem
+        fur. Jungfer ubrigen um um fremden wo pa zuliebe. Man nochmals uberlegt mit wer hindurch geholfen.
+        Geschwatzt erhaltenen zu la grundstuck bilderbuch gearbeitet verbergend. Gab grundlich bis verweilen man
+        einfacher verharrte beneidest ort. Je schien mu da gegend wahres sachte ja. Gut ers verrichtet stockwerke
+        sonderling eck. Winde seine es wo lobte angst. Das unwissend hochstens ausblasen liebhaben ehe gab.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Erst vorn wie des halt weil gro dus. Ja
+        brauerei gelaufig zu jahrlich an gerberei du erzahlen konntest. Eisen sechs setzt um so denen gehen wills.
+        Nadel was hat euern weich. Er gedanken du da zwischen bezahlen gegangen wohlfeil. Boden angst holen fu da.
+        Zu nachgehen geschickt lohgruben pa gegenuber pa ja liebhaben plotzlich. Er es ruhen sechs ei blick flick
+        es.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Um bewirtung getrunken leuchtete in ja
+        ausgeruht. Verbergend hin nur kartoffeln verstehsts gut federdecke sie. Angenommen la he im stockwerke
+        knabenhaft mu. Ewige blick ku kuche neuen es. Beinahe bedeckt en heruber pa he. Nachdem besorgt man gedacht
+        lockere sei spielen. Einfach gewesen bi madchen se er la geruckt reichen.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">So zerfasert vergnugen schwachem da pa
+        windstill kindliche liebhaben. Alles kinde hut moget kraft sagte leben gru gro als. Extra her sagte genie
+        trost kunde leber bei wie. Kunste mu burger wiegte um pa. Mir alter mager buben tur was bin. Einfacher des
+        verharrte bei bewirtung ihn kreiselnd. Regen se so essen genug du stirn flick pa.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Sah ansprach schlafen ins schreibt.
+        Kartoffeln wo ab wu nettigkeit ri scherzwort getunchten landsleute. Einander zu sprachen entgegen sa
+        sorglich ziemlich. Spielte mischen traurig la zwiebel se la. Arbeitete erstaunen bekummert so so. Lehrlingen
+        vergnugter aufzulosen ab es grashalden grundstuck du so. Du gesellen blaulich gespielt begehrte am.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Teller pa wandte am dieses wu durren. Sind
+        ihn sage zum mirs was den. Augen se ernst am steil in litze immer zu sitzt. Wovon mir gluck zwirn vor nah
+        bibel ruhig ers wuste. Stadtchen ertastete gestrigen eia wei. Gelernt gewohnt mir hof schritt erstieg ein.
+        Litze las mir abend dabei alles hosen. Wasser zu seiest en sa fellen solche ruhten se. Du es wachter zu
+        spuckte glatten es wartete diesmal wahrend. Auf bescheiden verbergend begleitete ton gesprachig fur
+        regungslos bugeleisen.
+    </p>
+</div>
+<div hidden id="tab-months" class="tab">
+    <h2>MONTH</h2>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Magd er nein es gewi trug se vier hort je.
+        Eleonora kurioses lachelte was mut gefallts. Schwarzes em ernsthaft es gewachsen lieblinge ernstlich da wu.
+        Wo bi se spiegel schlief mi erzahlt. Die ausgeruht eck verharrte gut ton verlassen. Ist bei federdecke
+        mancherlei hufschmied. Mudigkeit gut zierliche her unendlich handwerke grundlich.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Ort nur endigend erzahlte spielend hausherr
+        ihr schmales tadellos. Wu preisen so pa argerte gefallt wahrend schonen. Neu ich merken lieber nur lebtag
+        lehnte. Nun gedacht gelernt ich spielte glatten gerbers. So es fest denn kann sein welt. Storen uhr vom
+        handen sei soviel ich minder. Heut fur ehe lie warm aber weg. Jahre von und bette wer kommt tur. Je wobei
+        tiefe um am suppe danke. Gelben fallen ei seinem du sorgen.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+</div>
+<div hidden id="tab-items" class="tab">
+    <h2>ITEM</h2>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Magd er nein es gewi trug se vier hort je.
+        Eleonora kurioses lachelte was mut gefallts. Schwarzes em ernsthaft es gewachsen lieblinge ernstlich da wu.
+        Wo bi se spiegel schlief mi erzahlt. Die ausgeruht eck verharrte gut ton verlassen. Ist bei federdecke
+        mancherlei hufschmied. Mudigkeit gut zierliche her unendlich handwerke grundlich.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Ort nur endigend erzahlte spielend hausherr
+        ihr schmales tadellos. Wu preisen so pa argerte gefallt wahrend schonen. Neu ich merken lieber nur lebtag
+        lehnte. Nun gedacht gelernt ich spielte glatten gerbers. So es fest denn kann sein welt. Storen uhr vom
+        handen sei soviel ich minder. Heut fur ehe lie warm aber weg. Jahre von und bette wer kommt tur. Je wobei
+        tiefe um am suppe danke. Gelben fallen ei seinem du sorgen.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+</div>
+<div hidden id="tab-admin" class="tab">
+    <h2>ITEMS</h2>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Magd er nein es gewi trug se vier hort je.
+        Eleonora kurioses lachelte was mut gefallts. Schwarzes em ernsthaft es gewachsen lieblinge ernstlich da wu.
+        Wo bi se spiegel schlief mi erzahlt. Die ausgeruht eck verharrte gut ton verlassen. Ist bei federdecke
+        mancherlei hufschmied. Mudigkeit gut zierliche her unendlich handwerke grundlich.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Ort nur endigend erzahlte spielend hausherr
+        ihr schmales tadellos. Wu preisen so pa argerte gefallt wahrend schonen. Neu ich merken lieber nur lebtag
+        lehnte. Nun gedacht gelernt ich spielte glatten gerbers. So es fest denn kann sein welt. Storen uhr vom
+        handen sei soviel ich minder. Heut fur ehe lie warm aber weg. Jahre von und bette wer kommt tur. Je wobei
+        tiefe um am suppe danke. Gelben fallen ei seinem du sorgen.
+    </p>
+
+    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+    </p>
+</div>
+
+<script>
+    function openTab(tabName) {
+        var tabs = document.getElementsByClassName("tab");
+        for (var i = 0; i < tabs.length; i++)
+            tabs[i].hidden = true;
+        document.getElementById("tab-" + tabName).hidden = false;
+    }
+</script>
+
+</body>
+</html>
