@@ -113,8 +113,8 @@ function add() {
     xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     xhttp.send(
         "action=add&" +
-        "buyer=" + encodeURI(buyer) + "&" +
-        "what=" + encodeURI(what) + "&" +
-        "price=" + encodeURI(price)
+        "buyer=" + encodeURIComponent(buyer) + "&" +
+        "what=" + encodeURIComponent(what) + "&" +
+        "price=" + encodeURIComponent(price)
     )
 }
