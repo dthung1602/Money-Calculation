@@ -43,6 +43,11 @@ class Month(ndb.Model):
         return m[0] if len(m) > 0 else None
 
     @classmethod
+    def get_current_month_key(cls):
+        m = cls.query().order(-cls.time_begin).fetch(1, keys_only=True)
+        return m[0] if len(m) > 0 else None
+
+    @classmethod
     def end_month(cls):
         """
             End current month if it is not ended

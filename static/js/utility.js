@@ -50,3 +50,24 @@ function getDateTimeFormatted() {
 
     return dd + "/" + mm + "/" + (yy % 1000) + ", " + h + ":" + m + ":" + s;
 }
+
+function simpleFormat() {
+    var args = [];
+    for (var i = 0; i < arguments.length; i++)
+        args.push(arguments[i]);
+    var string = args[0];
+    var subStrings;
+    if (args.length === 2 && Array.isArray(args[1]))
+        subStrings = args[1];
+    else
+        subStrings = args.slice(1, args.length);
+
+    var pos = string.lastIndexOf("{}");
+    while (pos > -1) {
+        string = string.slice(0, pos)
+            + subStrings.pop()
+            + string.slice(pos + 2, string.length);
+        pos = string.lastIndexOf("{}");
+    }
+    return string;
+}

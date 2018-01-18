@@ -30,7 +30,7 @@ function changePassword() {
     var content = "action=changepassword&password=" + encodeURIComponent(password);
 
     // send request
-    makeHttpRequest(successChangePassword, null, "/admin", content);
+    makeHttpRequest(successChangePassword, alert, "/admin", content);
 }
 
 function isASCII(str) {
@@ -42,6 +42,8 @@ function isASCII(str) {
 }
 
 function validatePassword() {
+    validateRePassword();
+
     var password = document.getElementById("password").value;
     var tag = document.getElementById("password-error");
 
@@ -52,13 +54,13 @@ function validatePassword() {
     else {
         tag.innerHTML = "";
         var pwStrength = passwordStrength(password);
-
-        document.getElementById("password-strength").innerHTML =
-            "<div class='form-group'>" +
+        var content = "<div class='form-group'>" +
             "<label class='control-label col-sm-3' for='password-strength'>Password strength</label>" +
             "<div class='col-sm-5'>" +
-            "<span id='password-strength' style='color: " + pwStrength.color + "'><strong>" + pwStrength.strength + "</strong></span>" +
+            "<span id='password-strength' style='color: {}'><strong>{}</strong></span>" +
             "</div></div>";
+
+        document.getElementById("password-strength").innerHTML = simpleFormat(content, pwStrength.color, pwStrength.strength);
 
         return pwStrength.valid;
     }

@@ -59,17 +59,17 @@
 </head>
 <body>
 
-<div id="mySidenav" class="sidenav">
+<div class="sidenav">
     <h1>Administrator console</h1>
     <hr>
     <a href="/home">Home page</a>
     <a href="/newest">Current month</a>
     <a href="https://console.cloud.google.com/home/dashboard?project={{app_name}}">Cloud console</a>
     <hr>
-    <a onclick="openTab('welcome')">Welcome</a>
-    <a onclick="openTab('people')">People</a>
-    <a onclick="openTab('months')">Months</a>
-    <a onclick="openTab('items')">Items</a>
+    <a href="#" onclick="openTab('welcome')">Welcome</a>
+    <a href="#" onclick="openTab('people')">People</a>
+    <a href="#" onclick="openTab('months')">Months</a>
+    <a href="#" onclick="openTab('items')">Items</a>
     <hr>
     <a onclick="openTab('admin')">Admin</a>
 </div>
@@ -129,66 +129,18 @@
     </p>
 
 </div>
-<div hidden id="tab-people" class="tab">
+<div id="tab-people" class="tab">
     <h2>PEOPLE</h2>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Keine angst wurde eck dahin las brief einem
-        fur. Jungfer ubrigen um um fremden wo pa zuliebe. Man nochmals uberlegt mit wer hindurch geholfen.
-        Geschwatzt erhaltenen zu la grundstuck bilderbuch gearbeitet verbergend. Gab grundlich bis verweilen man
-        einfacher verharrte beneidest ort. Je schien mu da gegend wahres sachte ja. Gut ers verrichtet stockwerke
-        sonderling eck. Winde seine es wo lobte angst. Das unwissend hochstens ausblasen liebhaben ehe gab.
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Erst vorn wie des halt weil gro dus. Ja
-        brauerei gelaufig zu jahrlich an gerberei du erzahlen konntest. Eisen sechs setzt um so denen gehen wills.
-        Nadel was hat euern weich. Er gedanken du da zwischen bezahlen gegangen wohlfeil. Boden angst holen fu da.
-        Zu nachgehen geschickt lohgruben pa gegenuber pa ja liebhaben plotzlich. Er es ruhen sechs ei blick flick
-        es.
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Um bewirtung getrunken leuchtete in ja
-        ausgeruht. Verbergend hin nur kartoffeln verstehsts gut federdecke sie. Angenommen la he im stockwerke
-        knabenhaft mu. Ewige blick ku kuche neuen es. Beinahe bedeckt en heruber pa he. Nachdem besorgt man gedacht
-        lockere sei spielen. Einfach gewesen bi madchen se er la geruckt reichen.
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">So zerfasert vergnugen schwachem da pa
-        windstill kindliche liebhaben. Alles kinde hut moget kraft sagte leben gru gro als. Extra her sagte genie
-        trost kunde leber bei wie. Kunste mu burger wiegte um pa. Mir alter mager buben tur was bin. Einfacher des
-        verharrte bei bewirtung ihn kreiselnd. Regen se so essen genug du stirn flick pa.
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Sah ansprach schlafen ins schreibt.
-        Kartoffeln wo ab wu nettigkeit ri scherzwort getunchten landsleute. Einander zu sprachen entgegen sa
-        sorglich ziemlich. Spielte mischen traurig la zwiebel se la. Arbeitete erstaunen bekummert so so. Lehrlingen
-        vergnugter aufzulosen ab es grashalden grundstuck du so. Du gesellen blaulich gespielt begehrte am.
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Teller pa wandte am dieses wu durren. Sind
-        ihn sage zum mirs was den. Augen se ernst am steil in litze immer zu sitzt. Wovon mir gluck zwirn vor nah
-        bibel ruhig ers wuste. Stadtchen ertastete gestrigen eia wei. Gelernt gewohnt mir hof schritt erstieg ein.
-        Litze las mir abend dabei alles hosen. Wasser zu seiest en sa fellen solche ruhten se. Du es wachter zu
-        spuckte glatten es wartete diesmal wahrend. Auf bescheiden verbergend begleitete ton gesprachig fur
-        regungslos bugeleisen.
-    </p>
+    <hr><br>
+    <h3>All people in data store</h3>
+    <div class="list-group col-sm-4 table-striped" style="margin-top: 30px;">
+        {% for person in people %}
+        <div class="list-group-item" onclick="getPersonInfo('{{person.key.urlsafe()}}')">{{person.name}}</div>
+        {% endfor %}
+    </div>
+    <div id="info" class="panel panel-default col-sm-6" style="margin-top: 30px; margin-left: 50px; padding: 0">
+        <div style="margin: 20px"><i>Click a name to see more information</i></div>
+    </div>
 </div>
 <div hidden id="tab-months" class="tab">
     <h2>MONTH</h2>
@@ -240,9 +192,9 @@
     <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
     </p>
 </div>
-<div id="tab-admin" class="tab">
+<div hidden id="tab-admin" class="tab">
     <h2>ADMIN ACCOUNT</h2>
-
+    <hr><br>
     <div class="panel panel-default col-sm-10" style="font-size:120%; padding: 0; margin-top: 60px">
         <div class="panel-heading">
             <h4><strong>Change password</strong></h4>
@@ -277,6 +229,8 @@
 
 <script src="/static/js/admin.js"></script>
 <script src="/static/js/utility.js"></script>
+<script src="/static/js/people.js"></script>
+
 <script>
 
 </script>
