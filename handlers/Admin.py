@@ -15,6 +15,27 @@ class AdminHandler(Handler):
 
     def post(self):
         if not is_login(self):
-            self.error(401)
+            self.response.status = 401
+            self.write("Please login to perform this action!")
         else:
-            pass
+            action = self.request.get("action")
+            actions = {
+                "changepassword": self.change_password
+            }
+            method = actions.get(action, None)
+            if method:
+                method()
+            else:
+                self.response.status = 409
+                self.write("Invalid action.")
+
+    def change_password(self):
+        # update data store
+        password = self.request.get("password")
+        account = AdminAccount.get()
+        account.salt = account.create_salt()
+        account.hashed_password = account.hash(password, account.salt)
+        account.put()
+
+        # set login cookie
+        self.write(account.hashed_password)

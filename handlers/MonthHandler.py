@@ -81,6 +81,7 @@ class MonthHandler(Handler):
             errors.append("Invalid buyer")
         # evaluate price
         try:
+            print("price: |{}|".format(price))
             if not re.match("^[0-9 \-+*/()]+$", price):
                 raise SyntaxError
             price = eval(price)

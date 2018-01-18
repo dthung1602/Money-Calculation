@@ -246,7 +246,7 @@
     <div class="panel panel-default col-sm-10" style="font-size:120%; padding: 0; margin-top: 60px">
         <div class="panel-heading">
             <h4><strong>Change password</strong></h4>
-            <p>Last modified: {{account.last_modified.strftime("%d/%m/%y")}}</p>
+            <p id="password-last-mod">Last modified: {{account.last_modified.strftime("%d/%m/%y")}}</p>
         </div>
         <div class="form-horizontal panel-body" style="padding-left:30px">
             <div class="form-group">
@@ -275,116 +275,10 @@
 
 </div>
 
+<script src="/static/js/admin.js"></script>
+<script src="/static/js/utility.js"></script>
 <script>
-    function openTab(tabName) {
-        var tabs = document.getElementsByClassName("tab");
-        for (var i = 0; i < tabs.length; i++)
-            tabs[i].hidden = true;
-        document.getElementById("tab-" + tabName).hidden = false;
-    }
 
-    function changePassword() {
-
-    }
-
-    function isASCII(str) {
-        for (var i = 0, n = str.length; i < n; i++) {
-            if (str.charCodeAt(i) > 255)
-                return false;
-        }
-        return true;
-    }
-
-    function validatePassword(password) {
-        var tag = document.getElementById("password-error");
-        if (!isASCII(password))
-            tag.innerHTML = "<span style='color: red'>Password must contain only ASCII characters</span>";
-        else if (password.length === 0)
-            tag.innerHTML = "<span style='color: red'>Password must not be empty</span>";
-        else {
-            tag.innerHTML = "";
-            return true;
-        }
-        return false;
-    }
-
-    function passwordStrength() {
-        var password = document.getElementById("password").value;
-        var strengthDiv = document.getElementById("password-strength");
-
-        validateRePassword();
-
-        if (!validatePassword(password)) {
-            strengthDiv.innerText = "";
-            return;
-        }
-
-        // calculate password strength
-        var score = password.length; // 1p for each character
-        var regex = [/[a-z]/, /[A-Z]/, /[0-9]/, /[~`!@#$%^&*()_\-+={[}\]|\\:;"'<,>.?/]/];
-        for (var i = 0, n = regex.length; i < n; i++)
-            if (regex[i].test(password))
-                score += i + 2;
-
-        // classify
-        var strength, color;
-        var levels = [
-            {
-                score: 5,
-                strength: "Very weak",
-                color: "red"
-            },
-            {
-                score: 8,
-                strength: "Weak",
-                color: "orange"
-            },
-            {
-                score: 13,
-                strength: "Medium",
-                color: "yellow"
-            },
-            {
-                score: 20,
-                strength: "Strong",
-                color: "yellowgreen"
-            },
-            {
-                score: Number.POSITIVE_INFINITY,
-                strength: "Very Strong",
-                color: "green"
-            }
-        ];
-
-        for (i = 0; i < levels.length; i++) {
-            if (score < levels[i].score) {
-                strength = levels[i].strength;
-                color = levels[i].color;
-                break;
-            }
-        }
-
-        // display
-        strengthDiv.innerHTML =
-            "<div class='form-group'>" +
-            "<label class='control-label col-sm-3' for='password-strength'>Password strength</label>" +
-            "<div class='col-sm-5'>" +
-            "<span id='password-strength' style='color: " + color + "'><strong>" + strength + "</strong></span>" +
-            "</div></div>"
-    }
-
-    function validateRePassword() {
-        var str = document.getElementById("re-password").value;
-        var match = document.getElementById("password").value === str;
-        if (match) {
-            if (str.length > 0)
-                document.getElementById("re-password-error").innerHTML = "<span style='color: forestgreen'>Matched</span>";
-            else
-                document.getElementById("re-password-error").innerHTML = "<span style='color: red'>Please confirm password</span>";
-        } else {
-            document.getElementById("re-password-error").innerHTML = "<span style='color: red'>Password does not match</span>";
-        }
-    }
 </script>
 
 </body>

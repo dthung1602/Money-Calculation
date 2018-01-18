@@ -23,13 +23,7 @@ function addItemToTable(buyerKey, price) {
     // get info
     var buyer_name = document.getElementById(buyerKey).innerText;
     var what = document.getElementById("what").value;
-    var today = new Date();
-    var dd = today.getDate();
-    var mm = today.getMonth() + 1;
-    var yyyy = today.getFullYear();
-    if (dd < 10) dd = "0" + dd;
-    if (mm < 10) mm = "0" + mm;
-    var date = dd + "/" + mm + "/" + (yyyy % 1000);
+    var date = getDateFormatted();
 
     // add item to table
     var trTag = "<tr><td style='text-align:center'>" +
@@ -100,21 +94,37 @@ function add() {
     var buyer = document.getElementById("buyer").value;
     var what = document.getElementById("what").value;
     var price = document.getElementById("price").value;
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState !== 4)
-            return;
-        if (this.status === 200)
-            addSuccess();
-        else if (this.status === 409)
-            displayErrors(xhttp.responseText)
-    };
-    xhttp.open("POST", "/month/");
-    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    xhttp.send(
-        "action=add&" +
+
+    var content = "action=add&" +
         "buyer=" + encodeURIComponent(buyer) + "&" +
         "what=" + encodeURIComponent(what) + "&" +
-        "price=" + encodeURIComponent(price)
-    )
+        "price=" + encodeURIComponent(price);
+
+    makeHttpRequest(addSuccess, displayErrors, "/month/", content);
+    // var xhttp = new XMLHttpRequest();
+    // xhttp.onreadystatechange = function () {
+    //     if (this.readyState !== 4)
+    //         return;
+    //     switch (this.status) {
+    //         case 200:
+    //             addSuccess();
+    //             break;
+    //         case 401:
+    //             displayErrors("Please login to perform this action");
+    //             break;
+    //         case 409:
+    //             displayErrors(xhttp.responseText);
+    //             break;
+    //         case 500:
+    //             displayErrors("Internal server error. Please try again later.");
+    //     }
+    // };
+    // xhttp.open("POST", "/month/");
+    // xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    // xhttp.send(
+    //     "action=add&" +
+    //     "buyer=" + encodeURIComponent(buyer) + "&" +
+    //     "what=" + encodeURIComponent(what) + "&" +
+    //     "price=" + encodeURIComponent(price)
+    // )
 }
