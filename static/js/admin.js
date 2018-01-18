@@ -41,82 +41,80 @@ function isASCII(str) {
     return true;
 }
 
-function validatePassword(password) {
+function validatePassword() {
+    var password = document.getElementById("password").value;
     var tag = document.getElementById("password-error");
+
     if (!isASCII(password))
         tag.innerHTML = "<span style='color: red'>Password must contain only ASCII characters</span>";
     else if (password.length === 0)
         tag.innerHTML = "<span style='color: red'>Password must not be empty</span>";
     else {
         tag.innerHTML = "";
-        return true;
+        var pwStrength = passwordStrength(password);
+
+        document.getElementById("password-strength").innerHTML =
+            "<div class='form-group'>" +
+            "<label class='control-label col-sm-3' for='password-strength'>Password strength</label>" +
+            "<div class='col-sm-5'>" +
+            "<span id='password-strength' style='color: " + pwStrength.color + "'><strong>" + pwStrength.strength + "</strong></span>" +
+            "</div></div>";
+
+        return pwStrength.valid;
     }
     return false;
 }
 
-function passwordStrength() {
-    var password = document.getElementById("password").value;
-    var strengthDiv = document.getElementById("password-strength");
-
-    validateRePassword();
-
-    if (!validatePassword(password)) {
-        strengthDiv.innerText = "";
-        return;
-    }
-
+function passwordStrength(password) {
     // calculate password strength
     var score = password.length; // 1p for each character
-    var regex = [/[a-z]/, /[A-Z]/, /[0-9]/, /[~`!@#$%^&*()_\-+={[}\]|\\:;"'<,>.?/]/];
+    var regex = [/[a-z]/, /[0-9]/, /[A-Z]/, /[~`!@#$%^&*()_\-+={[}\]|\\:;"'<,>.?/]/];
     for (var i = 0, n = regex.length; i < n; i++)
         if (regex[i].test(password))
             score += i + 2;
 
     // classify
     var strength, color;
-    var levels = [
+    var securityLevels = [
         {
             score: 5,
             strength: "Very weak",
-            color: "red"
+            color: "red",
+            valid: false
         },
         {
             score: 8,
             strength: "Weak",
-            color: "orange"
+            color: "orange",
+            valid: false
         },
         {
             score: 14,
             strength: "Medium",
-            color: "yellow"
+            color: "yellow",
+            valid: true
         },
         {
             score: 22,
             strength: "Strong",
-            color: "yellowgreen"
+            color: "yellowgreen",
+            valid: true
         },
         {
             score: Number.POSITIVE_INFINITY,
             strength: "Very Strong",
-            color: "green"
+            color: "green",
+            valid: true
         }
     ];
 
-    for (i = 0; i < levels.length; i++) {
-        if (score < levels[i].score) {
-            strength = levels[i].strength;
-            color = levels[i].color;
-            break;
+    for (i = 0; i < securityLevels.length; i++) {
+        if (score <= securityLevels[i].score) {
+            strength = securityLevels[i].strength;
+            color = securityLevels[i].color;
+            return securityLevels[i]
         }
     }
-
-    // display
-    strengthDiv.innerHTML =
-        "<div class='form-group'>" +
-        "<label class='control-label col-sm-3' for='password-strength'>Password strength</label>" +
-        "<div class='col-sm-5'>" +
-        "<span id='password-strength' style='color: " + color + "'><strong>" + strength + "</strong></span>" +
-        "</div></div>"
 }
 
 function validateRePassword() {

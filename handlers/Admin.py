@@ -30,12 +30,24 @@ class AdminHandler(Handler):
                 self.write("Invalid action.")
 
     def change_password(self):
-        # update data store
         password = self.request.get("password")
-        account = AdminAccount.get()
-        account.salt = account.create_salt()
-        account.hashed_password = account.hash(password, account.salt)
-        account.put()
+        strength = AdminAccount.calculate_password_strength(password)
 
-        # set login cookie
-        self.write(account.hashed_password)
+        if strength == -1:
+            self.response.status = 409
+            self.write("Password must not contain non-ASCII characters")
+        elif strength == 0:
+            self.response.status = 409
+            self.write("Password must not be empty")
+        elif strength < 9:
+            self.response.status = 409
+            self.write("Password is too weak")
+        else:
+            # update data store
+            account = AdminAccount.get()
+            account.salt = account.create_salt()
+            account.hashed_password = account.hash(password, account.salt)
+            account.put()
+
+            # set login cookie
+            self.write(account.hashed_password)

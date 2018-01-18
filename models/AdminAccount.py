@@ -32,6 +32,21 @@ class AdminAccount(ndb.Model):
         length = app_config["default-login-salt-length"]
         return "".join([random.choice(s) for _ in xrange(length)])
 
+    @staticmethod
+    def calculate_password_strength(password):
+        if not all(ord(char) < 128 for char in password):
+            return -1
+
+        score = len(password)
+        password = set(password)
+        char_classes = map(set, [string.lowercase, string.digits, string.uppercase, string.punctuation])
+
+        for i in xrange(len(char_classes)):
+            if len(password.intersection(char_classes[i])) > 0:
+                score += i + 2
+
+        return score
+
     def hash(self, password, salt=None, hash_algorithm=None):
         """
             Concat password and salt, then hash the result using the algorithm defined in config.py
