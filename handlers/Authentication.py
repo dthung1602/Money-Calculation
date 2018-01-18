@@ -1,5 +1,6 @@
 from BaseHandler import Handler
 from models.AdminAccount import AdminAccount
+from datetime import datetime, timedelta
 
 
 def is_login(handler):
@@ -28,11 +29,14 @@ class Login(Handler):
                 self.render("login.html", error="Wrong password")
             else:
                 redirect_page = self.request.cookies.get("redirect", "/admin")
-                print(">>>>>>>")
-                print(redirect_page)
                 self.response.delete_cookie("redirect")
                 # login cookie has the value of the hashed password
-                self.response.set_cookie("login", admin_account.hashed_password)
+                if self.request.get("remember"):
+                    expire_date = datetime.now() + timedelta(30)
+                    print(expire_date)
+                else:
+                    expire_date = None
+                self.response.set_cookie("login", admin_account.hashed_password, expires=expire_date)
                 self.redirect(redirect_page)
 
 
