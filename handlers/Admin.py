@@ -1,3 +1,4 @@
+from google.appengine.ext import ndb
 from google.appengine.ext.ndb import Key
 
 from Authentication import *
@@ -32,6 +33,8 @@ class AdminHandler(Handler):
                 "getpersoninfo": self.get_person_info,
                 "newperson": self.new_person,
                 "getmonthinfo": self.get_month_info,
+                "listitems": self.list_items,
+                "deleteitems": self.delete_items,
             }
             method = actions.get(action, None)
             if method:
@@ -132,3 +135,46 @@ class AdminHandler(Handler):
             print(e)
             self.response.status = 409
             self.write("Can not resolve this month's key. Please reload this page or try again later")
+
+    def list_items(self):
+        try:
+            month = Key(urlsafe=self.request.get("key")).get()
+            people = ndb.get_multi(month.people)
+            key_to_people = {person.key: person for person in people}
+
+            items = []
+            for item in month.items:
+                items.append("|".join([
+                    item.date.strftime("%d/%m/%y"),
+                    key_to_people[item.buyer].name,
+                    item.what,
+                    str(item.price)
+                ]))
+
+            # write
+            s = ";".join([month.key.urlsafe()] + items)
+            self.write(s)
+
+        except Exception as e:
+            print(e)
+            self.response.status = 409
+            self.write("Can not list items in this month. Please reload this page or try again later")
+
+    def delete_items(self):
+        try:
+            month = Key(urlsafe=self.request.get("key")).get()
+            items_to_del = set(map(int, self.request.get("items").split(",")))
+            print(items_to_del)
+
+            items = [month.items[i] for i in set(range(len(month.items))) - items_to_del]
+
+            month.items = items
+            month.update_chain()
+
+            # write
+            self.write(month.key.urlsafe())
+
+        except Exception as e:
+            print(e)
+            self.response.status = 409
+            self.write("Can not delete item(s) in this month. Please reload this page or try again later")

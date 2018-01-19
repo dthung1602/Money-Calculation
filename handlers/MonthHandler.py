@@ -25,8 +25,6 @@ class MonthHandler(Handler):
     def post(self, month_key):
         """Handle adding new item and end month"""
         action = self.request.get("action")
-        print(self.request.get("what"))
-        print("ACTION: " + str(action))
 
         # create new month
         if action == "add":
@@ -81,7 +79,6 @@ class MonthHandler(Handler):
             errors.append("Invalid buyer")
         # evaluate price
         try:
-            print("price: |{}|".format(price))
             if not re.match("^[0-9 \-+*/()]+$", price):
                 raise SyntaxError
             price = eval(price)
@@ -93,7 +90,6 @@ class MonthHandler(Handler):
             errors.append("Price must be a positive integer")
 
         if len(errors) > 0:
-            print(";".join(errors))
             self.response.status = 409
             self.write(";".join(errors))
             return

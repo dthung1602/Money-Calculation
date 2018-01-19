@@ -139,7 +139,7 @@ class Month(ndb.Model):
             month.spend = sum(item.price for item in month.items)
             month.average = month.spend * 1.0 / month.number_of_people
             for money_usage in self.money_usages:
-                money_usage.update_chain(month, months[months.index(month) + 1:])
+                money_usage.get().update_chain(month, months[months.index(month) + 1:])
 
         # put
         ndb.put_multi(months)
