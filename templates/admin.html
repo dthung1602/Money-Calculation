@@ -46,6 +46,10 @@
             padding: 20px 20px 50px 40px;
         }
 
+        .striped:hover {
+            background: #efefef;
+        }
+
         @media screen and (max-height: 450px) {
             .sidenav {
                 padding-top: 15px;
@@ -131,14 +135,23 @@
 </div>
 <div id="tab-people" class="tab">
     <h2>PEOPLE</h2>
-    <hr><br>
-    <h3>All people in data store</h3>
-    <div class="list-group col-sm-4 table-striped" style="margin-top: 30px;">
+    <hr>
+    <br>
+    <div class="list-group col-sm-4 table-striped">
+        <b class="list-group-item">All people in data store</b>
+        <div id="people">
         {% for person in people %}
-        <div class="list-group-item" onclick="getPersonInfo('{{person.key.urlsafe()}}')">{{person.name}}</div>
+        <div class="list-group-item striped" style="padding-left: 35px"
+             onclick="getPersonInfo('{{person.key.urlsafe()}}')">{{person.name}}
+        </div>
         {% endfor %}
+        </div>
+        <div class="list-group-item">
+            <input id="name" placeholder="New person's name" style="width: 80%">
+            <button class="btn btn-default" style="width: 17%" onclick="createNewPerson()">Add</button>
+        </div>
     </div>
-    <div id="info" class="panel panel-default col-sm-6" style="margin-top: 30px; margin-left: 50px; padding: 0">
+    <div id="info" class="panel panel-default col-sm-6" style="margin-left: 50px; padding: 0">
         <div style="margin: 20px"><i>Click a name to see more information</i></div>
     </div>
 </div>
@@ -194,7 +207,8 @@
 </div>
 <div hidden id="tab-admin" class="tab">
     <h2>ADMIN ACCOUNT</h2>
-    <hr><br>
+    <hr>
+    <br>
     <div class="panel panel-default col-sm-10" style="font-size:120%; padding: 0; margin-top: 60px">
         <div class="panel-heading">
             <h4><strong>Change password</strong></h4>

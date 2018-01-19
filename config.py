@@ -8,4 +8,5 @@ app_config = {
     "default-login-password": "password",
     "default-login-salt-length": 25,
     "hashing-algorithm": "sha256",
+    "person-name-max-length": 20
 }

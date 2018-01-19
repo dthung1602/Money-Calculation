@@ -28,6 +28,7 @@ class AdminHandler(Handler):
             actions = {
                 "changepassword": self.change_password,
                 "getpersoninfo": self.get_person_info,
+                "newperson": self.new_person,
             }
             method = actions.get(action, None)
             if method:
@@ -73,20 +74,32 @@ class AdminHandler(Handler):
             payment = sum(money_usage.money_spend for money_usage in money_usages) * 1000
 
             # last month
-            last_money_usage = person.last_money_usage.get()
-            last_month = last_money_usage.month.get()
-            last_month_str = last_month.to_string_short() + " (" + last_month.to_string_long() + ")"
+            if person.last_money_usage:
+                last_money_usage = person.last_money_usage.get()
+                last_month = last_money_usage.month.get()
 
-            print(last_month.key)
-            print(Month.get_current_month_key())
+                last_month_str = last_month.to_string_short() + " (" + last_month.to_string_long() + ")"
+                next_month_left = last_money_usage.next_month_left * 1000
+                in_current_month = last_month.key == Month.get_current_month_key()
+            else:
+                last_month_str = next_month_left = in_current_month = "N/A"
 
             # write
-            s = ";".join(map(str, [person.name, key.urlsafe(), total_spend, len(months), payment, last_month_str,
-                                   last_money_usage.next_month_left * 1000,
-                                   last_month.key == Month.get_current_month_key()]))
+            s = ";".join(map(str, [person.name, key.id(), total_spend, len(months), payment,
+                                   last_month_str, next_month_left, in_current_month]))
             self.write(s)
 
         except Exception as e:
             print(e)
             self.response.status = 409
             self.write("Can not resolve this buyer's key. Please reload this page and try again later")
+
+    def new_person(self):
+        name = self.request.get("name")
+        if not Person.validate_name(name):
+            self.response.status = 409
+            self.write("Invalid name. A valid name must be between 1 and 20 letters and must be unique.")
+        else:
+            person = Person(name=name)
+            person.put()
+            self.write(";".join([person.key.urlsafe(), person.name]))
