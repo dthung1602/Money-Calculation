@@ -50,6 +50,11 @@
             background: #efefef;
         }
 
+        .affix {
+            top: 5px;
+            z-index: 9999 !important;
+        }
+
         @media screen and (max-height: 450px) {
             .sidenav {
                 padding-top: 15px;
@@ -60,6 +65,8 @@
             }
         }
     </style>
+    <script src="/static/js/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
 </head>
 <body>
 
@@ -135,15 +142,16 @@
 </div>
 <div hidden id="tab-people" class="tab">
     <h2>PEOPLE</h2>
-    <hr><br>
+    <hr>
+    <br>
     <div class="list-group col-sm-4 table-striped">
         <b class="list-group-item">All people in data store</b>
         <div id="people">
-        {% for person in people %}
-        <div class="list-group-item striped" style="padding-left: 35px"
-             onclick="getPersonInfo('{{person.key.urlsafe()}}')">{{person.name}}
-        </div>
-        {% endfor %}
+            {% for person in people %}
+            <div class="list-group-item striped" style="padding-left: 35px"
+                 onclick="getPersonInfo('{{person.key.urlsafe()}}')">{{person.name}}
+            </div>
+            {% endfor %}
         </div>
         <div class="list-group-item">
             <input id="name" placeholder="New person's name" style="width: 80%">
@@ -156,52 +164,79 @@
 </div>
 <div id="tab-months" class="tab">
     <h2>MONTH</h2>
-    <hr><br>
-    <div class="list-group col-sm-4 table-striped">
-        <b class="list-group-item">All month in data store</b>
-        <div id="months">
+    <hr>
+    <br>
+
+    <nav class="col-sm-4">
+        <ul id="months" class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
             {% for month in months %}
-            <div class="list-group-item striped" style="padding-left: 35px"
-                 onclick="getMonthInfo('{{month.key.urlsafe()}}')">{{month.to_string_long()}}
-            </div>
+            <li onclick="getMonthInfo('{{month.key.urlsafe()}}')">
+                <a>{{month.to_string_long()}}</a>
+            </li>
             {% endfor %}
-        </div>
+        </ul>
+    </nav>
+
+    <div id="month-info" class="col-sm-8">
+        <div class="panel panel-default" style="padding: 20px"><i>Click a month for more information</i></div>
     </div>
 
-    <div class="col-sm-6" style="margin-left: 50px; padding: 0">
-        <div id="month-info" class="panel panel-default">
-            <div style="margin: 20px"><i>Click a month to see more information</i></div>
-        </div>
-        <div hidden id="items" class="panel panel-default">
-            <div style="margin: 20px"><i>Click a name to see more information</i></div>
-        </div>
-    </div>
 
 </div>
 <div hidden id="tab-items" class="tab">
     <h2>ITEM</h2>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
+    <div class="row">
+        <nav class="col-sm-3">
+            <ul class="nav nav-pills nav-stacked" data-spy="affix" data-offset-top="205">
+                <li class="active"><a href="#section1">Section 1</a></li>
+                <li><a href="#section2">Section 2</a></li>
+                <li><a href="#section3">Section 3</a></li>
+            </ul>
+        </nav>
+        <div class="col-sm-9">
+            <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+            </p>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Magd er nein es gewi trug se vier hort je.
-        Eleonora kurioses lachelte was mut gefallts. Schwarzes em ernsthaft es gewachsen lieblinge ernstlich da wu.
-        Wo bi se spiegel schlief mi erzahlt. Die ausgeruht eck verharrte gut ton verlassen. Ist bei federdecke
-        mancherlei hufschmied. Mudigkeit gut zierliche her unendlich handwerke grundlich.
-    </p>
+            <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Magd er nein es gewi trug se vier hort
+                je. Eleonora kurioses lachelte was mut gefallts. Schwarzes em ernsthaft es gewachsen lieblinge ernstlich
+                da wu. Wo bi se spiegel schlief mi erzahlt. Die ausgeruht eck verharrte gut ton verlassen.
+                Ist bei
+                federdecke mancherlei hufschmied. Mudigkeit gut zierliche her unendlich handwerke grundlich.
+            </p>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
+            <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+            </p>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Ort nur endigend erzahlte spielend hausherr
-        ihr schmales tadellos. Wu preisen so pa argerte gefallt wahrend schonen. Neu ich merken lieber nur lebtag
-        lehnte. Nun gedacht gelernt ich spielte glatten gerbers. So es fest denn kann sein welt. Storen uhr vom
-        handen sei soviel ich minder. Heut fur ehe lie warm aber weg. Jahre von und bette wer kommt tur. Je wobei
-        tiefe um am suppe danke. Gelben fallen ei seinem du sorgen.
-    </p>
+            <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Ort nur endigend erzahlte spielend
+                hausherr
+                ihr schmales tadellos. Wu preisen so pa argerte gefallt wahrend schonen. Neu ich merken lieber nur
+                lebtag
+                lehnte. Nun gedacht gelernt ich spielte glatten gerbers. So es fest denn kann sein welt. Storen uhr vom
+                handen sei soviel ich minder. Heut fur ehe lie warm aber weg. Jahre von und bette wer kommt tur. Je
+                wobei
+                tiefe um am suppe danke. Gelben fallen ei seinem du sorgen.
+            </p>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
+            <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
+            </p>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+            <h1>Some text to enable scrolling</h1>
+
+        </div>
+    </div>
 </div>
 <div hidden id="tab-admin" class="tab">
     <h2>ADMIN ACCOUNT</h2>

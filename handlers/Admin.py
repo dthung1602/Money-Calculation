@@ -123,7 +123,8 @@ class AdminHandler(Handler):
                 next_month,
                 people_in_month,
                 month.spend,
-                month.average
+                month.average,
+                month.key.urlsafe(),
             ]))
             self.write(s)
 

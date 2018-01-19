@@ -1,18 +1,23 @@
+//------------------  get month info -----------------
+
 function displayMonthInfo(info) {
     var divTag = document.getElementById("month-info");
     var content =
-        "<div class='panel-heading'>" +
-        "   <h4><strong>{}</strong></h4>" +
-        "</div>" +
-        "<table class='table table-striped table-bordered table-hover'>" +
-        "   <tr><td class=''>Start date</td><td>{}</td></tr>" +
-        "   <tr><td class=''>End date</td><td>{}</td></tr>" +
-        "   <tr><td class=''>Previous month</td><td>{}</td></tr>" +
-        "   <tr><td class=''>Next month</td><td>{}</td></tr>" +
-        "   <tr><td class=''>People in month</td><td>{}</td></tr>" +
-        "   <tr><td class=''>Total</td><td>{}</td></tr>" +
-        "   <tr><td class=''>Average</td><td>{}</td></tr>" +
-        "</table>";
+        "<table id=\"month-info\" class='table table-hover'>" +
+        "<thead class='panel-heading'>" +
+        "<tr><th colspan='2'><h3><strong>{}</strong></h3></th></tr>" +
+        "</thead>" +
+        "<tbody>" +
+        "<tr><td class='col-sm-3'>Start date</td><td>{}</td></tr>" +
+        "<tr><td>End date</td><td>{}</td></tr>" +
+        "<tr><td>Previous month</td><td>{}</td></tr>" +
+        "<tr><td>Next month</td><td>{}</td></tr>" +
+        "<tr><td>People in month</td><td>{}</td></tr>" +
+        "<tr><td>Total</td><td>{}</td></tr>" +
+        "<tr><td>Average</td><td>{}</td></tr>" +
+        "</tbody>" +
+        "</table>" +
+        "<div align='center' id='items'><button class='btn btn-default' onclick='listItems(\"{}\")'>List items</button></div>";
 
     divTag.innerHTML = simpleFormat(content, info.split(";"));
 }
@@ -31,4 +36,19 @@ function displayMonthInfoError(error) {
 function getMonthInfo(key) {
     var content = "action=getmonthinfo&key=" + key;
     makeHttpRequest(displayMonthInfo, displayMonthInfoError, "/admin", content);
+}
+
+//------------------  list items -----------------
+
+function displayItems(data) {
+
+}
+
+function displayItemsError(error) {
+
+}
+
+function listItems(key) {
+    var content = "action=listitems&key=" + key;
+    makeHttpRequest(displayItems, displayItemsError, "/admin", content);
 }

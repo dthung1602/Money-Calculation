@@ -10,17 +10,14 @@
 
 {% block content %}
 
-<!--------------------------errors-------------------------->
-{% for er in error %}
-<br><br>
-<div class="alert alert-danger" style="text-align: left">
-    <img src="/static/images/error.png" height="55px">
-    <strong style="font-size:150%;margin-left: 20px">ERROR!</strong>
-    <span style="font-size:150%;margin-left: 30px">{{error}}</span>
+<!------------------------ links ----------------------->
+<div style="margin-bottom: 30px;">
+    <div class="btn-group">
+        <button class="btn btn-warning" onclick="window.location='/admin'">ADMIN</button>
+        <button class="btn btn-warning" onclick="window.location='/newest'">CURRENT MONTH</button>
+    </div>
 </div>
-<br><br>
-{% endfor %}
-<br>
+
 
 {% if months|length > 0 %}
 <!------------------------list all months------------------->
@@ -28,7 +25,7 @@
     {% for m in months %}
     <a class="list-group-item" href="/month/{{m.key.urlsafe()}}"
         {% if m.time_end == None %} style="background: #D9EDF7" {% endif %}>
-        {{m.to_string_long()}})
+        {{m.to_string_long()}}
     </a>
     {% endfor %}
 </div>
