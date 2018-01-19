@@ -133,10 +133,9 @@
     </p>
 
 </div>
-<div id="tab-people" class="tab">
+<div hidden id="tab-people" class="tab">
     <h2>PEOPLE</h2>
-    <hr>
-    <br>
+    <hr><br>
     <div class="list-group col-sm-4 table-striped">
         <b class="list-group-item">All people in data store</b>
         <div id="people">
@@ -155,30 +154,29 @@
         <div style="margin: 20px"><i>Click a name to see more information</i></div>
     </div>
 </div>
-<div hidden id="tab-months" class="tab">
+<div id="tab-months" class="tab">
     <h2>MONTH</h2>
+    <hr><br>
+    <div class="list-group col-sm-4 table-striped">
+        <b class="list-group-item">All month in data store</b>
+        <div id="months">
+            {% for month in months %}
+            <div class="list-group-item striped" style="padding-left: 35px"
+                 onclick="getMonthInfo('{{month.key.urlsafe()}}')">{{month.to_string_long()}}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
+    <div class="col-sm-6" style="margin-left: 50px; padding: 0">
+        <div id="month-info" class="panel panel-default">
+            <div style="margin: 20px"><i>Click a month to see more information</i></div>
+        </div>
+        <div hidden id="items" class="panel panel-default">
+            <div style="margin: 20px"><i>Click a name to see more information</i></div>
+        </div>
+    </div>
 
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Magd er nein es gewi trug se vier hort je.
-        Eleonora kurioses lachelte was mut gefallts. Schwarzes em ernsthaft es gewachsen lieblinge ernstlich da wu.
-        Wo bi se spiegel schlief mi erzahlt. Die ausgeruht eck verharrte gut ton verlassen. Ist bei federdecke
-        mancherlei hufschmied. Mudigkeit gut zierliche her unendlich handwerke grundlich.
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">Ort nur endigend erzahlte spielend hausherr
-        ihr schmales tadellos. Wu preisen so pa argerte gefallt wahrend schonen. Neu ich merken lieber nur lebtag
-        lehnte. Nun gedacht gelernt ich spielte glatten gerbers. So es fest denn kann sein welt. Storen uhr vom
-        handen sei soviel ich minder. Heut fur ehe lie warm aber weg. Jahre von und bette wer kommt tur. Je wobei
-        tiefe um am suppe danke. Gelben fallen ei seinem du sorgen.
-    </p>
-
-    <p style="text-align: justify; margin-top: 8px; margin-bottom: 40px">
-    </p>
 </div>
 <div hidden id="tab-items" class="tab">
     <h2>ITEM</h2>
@@ -244,6 +242,7 @@
 <script src="/static/js/admin.js"></script>
 <script src="/static/js/utility.js"></script>
 <script src="/static/js/people.js"></script>
+<script src="/static/js/month-admin.js"></script>
 
 <script>
 

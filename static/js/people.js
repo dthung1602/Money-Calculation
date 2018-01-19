@@ -1,4 +1,6 @@
-function displayInfo(info) {
+//--------------------- Get info ----------------------
+
+function displayPersonInfo(info) {
     var divTag = document.getElementById("info");
     var content =
         "<div class='panel-heading'>" +
@@ -17,7 +19,7 @@ function displayInfo(info) {
     divTag.innerHTML = simpleFormat(content, info.split(";"));
 }
 
-function displayErrorPersonInfo(error) {
+function displayPersonInfoError(error) {
     var divTag = document.getElementById("info");
     var content =
         "<div class='panel-heading'>" +
@@ -30,8 +32,10 @@ function displayErrorPersonInfo(error) {
 
 function getPersonInfo(key) {
     var content = "action=getpersoninfo&key=" + key;
-    makeHttpRequest(displayInfo, displayErrorPersonInfo, "/admin", content);
+    makeHttpRequest(displayPersonInfo, displayPersonInfoError, "/admin", content);
 }
+
+//--------------------- New person ----------------------
 
 function addNewPerson(data) {
     data = data.split(";");

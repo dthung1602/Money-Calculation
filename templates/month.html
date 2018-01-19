@@ -2,7 +2,7 @@
 
 {% block heading %}
 
-<h1 style="padding-bottom:25px;padding-left:50px">{{month.time_begin.strftime("%B %Y")}}</h1>
+<h1 style="padding-bottom:25px;padding-left:50px">{{month.to_string_short()}}</h1>
 <p style="padding-left:70px"><i>Start date: {{month.time_begin.strftime("%d/%m/%y")}}</i></p>
 {% if month.time_end %}
 <p style="padding-left:70px"><i>End date : {{month.time_end.strftime("%d/%m/%y")}}</i></p>

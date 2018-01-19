@@ -27,9 +27,8 @@
 <div class="list-group">
     {% for m in months %}
     <a class="list-group-item" href="/month/{{m.key.urlsafe()}}"
-       {% if m.time_end == None %} style="background: #D9EDF7" {% endif %}>
-        {{m.to_string_short()}} ({{m.to_string_long()}})
-        <!--<span class="badge" style="background-color:green">current month</span>-->
+        {% if m.time_end == None %} style="background: #D9EDF7" {% endif %}>
+        {{m.to_string_long()}})
     </a>
     {% endfor %}
 </div>

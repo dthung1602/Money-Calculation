@@ -30,8 +30,13 @@ class Month(ndb.Model):
         return self.time_begin.strftime("%B %Y")
 
     def to_string_long(self):
-        return self.time_begin.strftime("%d/%m/%y") + " - " + \
-               (self.time_end.strftime("%d/%m/%y") if self.time_end is not None else "now")
+        return "{} ({} - {})".format(self.to_string_short(), self.time_begin_format(), self.time_end_format())
+
+    def time_begin_format(self):
+        return self.time_begin.strftime("%d/%m/%y")
+
+    def time_end_format(self):
+        return self.time_end.strftime("%d/%m/%y") if self.time_end else "now"
 
     @classmethod
     def get_all(cls):

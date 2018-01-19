@@ -17,7 +17,9 @@ class AdminHandler(Handler):
             self.render("admin.html",
                         app_name=app_config["app-name"],
                         account=AdminAccount.get(),
-                        people=Person.get_all())
+                        people=Person.get_all(),
+                        months=Month.get_all(),
+                        )
 
     def post(self):
         if not is_login(self):
@@ -29,6 +31,7 @@ class AdminHandler(Handler):
                 "changepassword": self.change_password,
                 "getpersoninfo": self.get_person_info,
                 "newperson": self.new_person,
+                "getmonthinfo": self.get_month_info,
             }
             method = actions.get(action, None)
             if method:
@@ -78,7 +81,7 @@ class AdminHandler(Handler):
                 last_money_usage = person.last_money_usage.get()
                 last_month = last_money_usage.month.get()
 
-                last_month_str = last_month.to_string_short() + " (" + last_month.to_string_long() + ")"
+                last_month_str = last_month.to_string_long()
                 next_month_left = last_money_usage.next_month_left * 1000
                 in_current_month = last_month.key == Month.get_current_month_key()
             else:
@@ -92,7 +95,7 @@ class AdminHandler(Handler):
         except Exception as e:
             print(e)
             self.response.status = 409
-            self.write("Can not resolve this buyer's key. Please reload this page and try again later")
+            self.write("Can not resolve this buyer's key. Please reload this page or try again later")
 
     def new_person(self):
         name = self.request.get("name")
@@ -103,3 +106,28 @@ class AdminHandler(Handler):
             person = Person(name=name)
             person.put()
             self.write(";".join([person.key.urlsafe(), person.name]))
+
+    def get_month_info(self):
+        try:
+            month = Key(urlsafe=self.request.get("key")).get()
+            prev_month = month.prev_month.get().to_string_short() if month.prev_month else "N/A"
+            next_month = month.next_month.get().to_string_short() if month.next_month else "N/A"
+            people_in_month = ", ".join([person.get().name for person in month.people])
+
+            # write
+            s = ";".join(map(str, [
+                month.to_string_short(),
+                month.time_begin_format(),
+                month.time_end_format(),
+                prev_month,
+                next_month,
+                people_in_month,
+                month.spend,
+                month.average
+            ]))
+            self.write(s)
+
+        except Exception as e:
+            print(e)
+            self.response.status = 409
+            self.write("Can not resolve this month's key. Please reload this page or try again later")
