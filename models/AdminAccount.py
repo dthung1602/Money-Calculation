@@ -23,7 +23,13 @@ class AdminAccount(ndb.Model):
     @classmethod
     def get(cls):
         """:return the admin account in data store or a new one if it is not defined"""
-        return cls.query().fetch()[0]
+        account = list(cls.query().fetch())
+        if len(account) > 0:
+            return account[0]
+        else:
+            account = AdminAccount()
+            account.put()
+            return account
 
     @staticmethod
     def create_salt():
@@ -46,6 +52,14 @@ class AdminAccount(ndb.Model):
                 score += i + 2
 
         return score
+
+    def put(self, **kwargs):
+        """
+            Ensure that there's only one admin account in data store
+        """
+        if len(list(AdminAccount.query().fetch(keys_only=True))) > 0 and not self.key:
+            raise SingletonError
+        return super(AdminAccount, self)._put(**kwargs)
 
     def hash(self, password, salt=None, hash_algorithm=None):
         """
