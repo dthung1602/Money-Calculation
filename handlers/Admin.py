@@ -3,6 +3,7 @@ from google.appengine.ext.ndb import Key
 
 from Authentication import *
 from config import app_config
+from libs.validate_email import validate_email
 from models.AdminAccount import AdminAccount
 from models.MoneyUsage import MoneyUsage
 from models.Month import Month
@@ -35,6 +36,8 @@ class AdminHandler(Handler):
                 "getmonthinfo": self.get_month_info,
                 "listitems": self.list_items,
                 "deleteitems": self.delete_items,
+                "deleteemail": self.delete_email,
+                "createemail": self.create_email,
             }
             method = actions.get(action, None)
             if method:
@@ -104,7 +107,9 @@ class AdminHandler(Handler):
         name = self.request.get("name")
         if not Person.validate_name(name):
             self.response.status = 409
-            self.write("Invalid name. A valid name must be between 1 and 20 letters and must be unique.")
+            self.write(
+                "Invalid name. A valid name must be unique, between 1 and 20 letters "
+                "and must not contains punctuations (except the '_')")
         else:
             person = Person(name=name)
             person.put()
@@ -178,3 +183,30 @@ class AdminHandler(Handler):
             print(e)
             self.response.status = 409
             self.write("Can not delete item(s) in this month. Please reload this page or try again later")
+
+    def delete_email(self):
+        email = self.request.get("email")
+        account = AdminAccount.get()
+        try:
+            account.emails.remove(email)
+        except ValueError:
+            self.response.status = 409
+            self.write("Email does not exist!")
+        else:
+            account.put()
+            self.write(email)
+
+    def create_email(self):
+        email = self.request.get("email")
+        if validate_email(email):
+            account = AdminAccount.get()
+            if email not in account.emails:
+                account.emails.append(email)
+                account.put()
+                self.write(email)
+            else:
+                self.response.status = 409
+                self.write("Email has already exists!")
+        else:
+            self.response.status = 409
+            self.write("Invalid email!")

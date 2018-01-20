@@ -1,13 +1,16 @@
+import string
+
 from google.appengine.ext import ndb
 
 from config import app_config
+
+NAME_MAX_LEN = app_config["person-name-max-length"]
+INVALID_CHARS = set(string.punctuation.replace("_", ""))
 
 
 class Person(ndb.Model):
     name = ndb.StringProperty(required=True)
     last_money_usage = ndb.KeyProperty(kind="MoneyUsage")
-
-    NAME_MAX_LEN = app_config["person-name-max-length"]
 
     def get_last_month_left(self):
         if self.last_money_usage is None:
@@ -21,4 +24,13 @@ class Person(ndb.Model):
 
     @classmethod
     def validate_name(cls, name):
-        return 0 < len(name) <= cls.NAME_MAX_LEN and all(name != person.name for person in cls.get_all())
+        # check length
+        if not 0 < len(name) <= NAME_MAX_LEN:
+            return False
+        # check uniqueness
+        if not all(name != person.name for person in cls.get_all()):
+            return False
+        # check for invalid chars
+        if len(set(name).intersection(INVALID_CHARS)) > 0:
+            return False
+        return True

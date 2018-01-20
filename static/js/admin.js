@@ -1,9 +1,4 @@
-function openTab(tabName) {
-    var tabs = document.getElementsByClassName("tab");
-    for (var i = 0; i < tabs.length; i++)
-        tabs[i].hidden = true;
-    document.getElementById("tab-" + tabName).hidden = false;
-}
+// ------------------ password ---------------------
 
 function successChangePassword(login_cookie) {
     // set login cookie
@@ -132,4 +127,32 @@ function validateRePassword() {
         document.getElementById("re-password-error").innerHTML = "<span style='color: red'>Password does not match</span>";
     }
     return false;
+}
+
+
+// ----------------------- email -------------------
+
+function displayEmailError(error) {
+    document.getElementById("email-error").innerHTML = error;
+}
+
+function deleteEmail(email) {
+    var content = "action=deleteemail&email=" + encodeURIComponent(email);
+    makeHttpRequest(deleteElementById, displayEmailError, "/admin", content);
+}
+
+function addEmailToList(email) {
+    var content =
+        "<div class=\"list-group-item\" id=\"{}\">" +
+        "    <span>{}</span> <button class=\"btn btn-danger\" style='padding: 0 3px; display: inline-block; position: absolute; right: 7px' onclick=\"deleteEmail('{}')\">&#10006;</button>" +
+        "</div>";
+
+    document.getElementById("emails").innerHTML += simpleFormat(content, email, email, email);
+    displayEmailError("");
+}
+
+function createNewEmail() {
+    var email = document.getElementById("email").value;
+    var content = "action=createemail&email=" + encodeURIComponent(email);
+    makeHttpRequest(addEmailToList, displayEmailError, "/admin", content);
 }

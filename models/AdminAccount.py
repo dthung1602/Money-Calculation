@@ -13,6 +13,7 @@ class AdminAccount(ndb.Model):
     salt = ndb.StringProperty(required=True)
     hashed_password = ndb.StringProperty(required=True)
     hash_algorithm = ndb.StringProperty(required=True)
+    emails = ndb.StringProperty(repeated=True)
     last_modified = ndb.DateTimeProperty(auto_now=True)
 
     @classmethod
@@ -40,10 +41,16 @@ class AdminAccount(ndb.Model):
 
     @staticmethod
     def calculate_password_strength(password):
+        """:return a number indicates strength of the given password"""
+
+        # password can't contain non-ASCII chars
         if not all(ord(char) < 128 for char in password):
             return -1
 
+        # 1 point for length
         score = len(password)
+
+        # more points for different char classes
         password = set(password)
         char_classes = map(set, [string.lowercase, string.digits, string.uppercase, string.punctuation])
 
@@ -57,7 +64,7 @@ class AdminAccount(ndb.Model):
         """
             Ensure that there's only one admin account in data store
         """
-        if len(list(AdminAccount.query().fetch(keys_only=True))) > 0 and not self.key:
+        if self.is_defined() and not self.key:
             raise SingletonError
         return super(AdminAccount, self)._put(**kwargs)
 

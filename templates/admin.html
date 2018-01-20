@@ -162,7 +162,7 @@
         <div style="margin: 20px"><i>Click a name to see more information</i></div>
     </div>
 </div>
-<div id="tab-months" class="tab">
+<div hidden id="tab-months" class="tab">
     <h2>MONTH</h2>
     <hr>
     <br>
@@ -238,7 +238,7 @@
         </div>
     </div>
 </div>
-<div hidden id="tab-admin" class="tab">
+<div id="tab-admin" class="tab">
     <h2>ADMIN ACCOUNT</h2>
     <hr>
     <br>
@@ -270,6 +270,24 @@
                 <button class="btn" onclick="changePassword()">Change</button>
             </div>
         </div>
+    </div>
+
+    <div class="panel panel-default col-sm-6" style="font-size:120%; padding: 0; margin-top: 60px; margin-bottom: 80px">
+        <div class="panel-heading">
+            <h4><strong>Emails</strong></h4>
+        </div>
+        <div id="emails" class="list-group" style="padding: 10px">
+            {% for email in account.emails %}
+            <div class="list-group-item" id="{{email}}">
+                <span>{{email}}</span> <button class="btn btn-danger" style='padding: 0 3px; display: inline-block; position: absolute; right: 7px' onclick="deleteEmail('{{email}}')">&#10006;</button>
+            </div>
+            {% endfor %}
+        </div>
+        <div style="margin: 8px">
+            <input id="email" placeholder="New email" style="margin-left: 15px; width: 85%">
+            <button class="btn btn-default" onclick="createNewEmail()">Add</button>
+        </div>
+        <div id="email-error" style="color: red; margin: 10px; padding: 5px;"></div>
     </div>
 
 </div>
