@@ -1,6 +1,10 @@
-from BaseHandler import Handler
-from models.AdminAccount import AdminAccount
 from datetime import datetime, timedelta
+
+from google.appengine.api import mail
+
+from BaseHandler import Handler
+from config import app_config
+from models.AdminAccount import AdminAccount
 
 
 def is_login(handler):
@@ -52,3 +56,33 @@ class Logout(Handler):
         self.response.delete_cookie("login")
         self.response.delete_cookie("redirect")
         self.redirect("/")
+
+
+class RecoverPassword(Handler):
+    def post(self):
+        email = self.request.get("email")
+        if email not in AdminAccount.get().emails:
+            self.response.status = 409
+            self.write("This email is not registered as an email of admin")
+        else:
+            try:
+                new_password = AdminAccount.set_new_random_password()
+                app_name = app_config["app-name"]
+                html_content = self.render_str("recover-password-email.html",
+                                               new_password=new_password,
+                                               app_name=app_name)
+
+                email_message = mail.EmailMessage(
+                    sender="recover_password@{}.appspot.com".format(app_name),
+                    to=email,
+                    subject="Recover password",
+                    html=html_content
+                )
+
+                email_message.send()
+            except Exception as e:
+                print(e)
+                self.response.status = 500
+                self.write("An error occurred while the server was trying to send you email. Please try again later.")
+            else:
+                self.write("An email has been send to you. Please check mail and follow the instructions.")

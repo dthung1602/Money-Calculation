@@ -148,6 +148,8 @@ function addEmailToList(email) {
         "</div>";
 
     document.getElementById("emails").innerHTML += simpleFormat(content, email, email, email);
+
+    document.getElementById("email").value = "";
     displayEmailError("");
 }
 

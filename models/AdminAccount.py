@@ -60,6 +60,26 @@ class AdminAccount(ndb.Model):
 
         return score
 
+    @classmethod
+    def set_new_random_password(cls):
+        """
+            Change password to a random string
+            :return: new password
+        """
+        # create new password
+        length = app_config["default-login-password-length"]
+        s = string.uppercase + string.lowercase + string.digits
+        new_password = "".join([random.choice(s) for _ in xrange(length)])
+        new_salt = cls.create_salt()
+
+        # save to data store
+        account = cls.get()
+        account.salt = new_salt
+        account.hashed_password = account.hash(new_password)
+        account.put()
+
+        return new_password
+
     def put(self, **kwargs):
         """
             Ensure that there's only one admin account in data store

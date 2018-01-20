@@ -29,7 +29,7 @@
 {% endif %}
 
 <!------------------------------ login form ------------------------------->
-<div class="panel panel-primary col-md-8" style="font-size:120%; padding: 0; margin-top: 60px">
+<div class="panel panel-primary col-md-8" style="padding: 0; margin-top: 60px">
     <div class="panel-heading">
         <h4><strong>Login</strong></h4>
     </div>
@@ -57,12 +57,17 @@
             </div>
         </div>
 
-
         <div align="center">
             <button type="submit" name="action" value="NEW MONTH" class="btn btn-primary">LOGIN</button>
         </div>
     </form>
 </div>
 
+<div id="forget" class="panel col-md-8" style="font-size:120%; padding: 0; margin-top: 30px; margin-bottom: 60px">
+    <button class="btn btn-default" onclick="forgetPassword()">Forget password?</button>
+</div>
+
+<script src="/static/js/login.js"></script>
+<script src="/static/js/utility.js"></script>
 
 {% endblock %}

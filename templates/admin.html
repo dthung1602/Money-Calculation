@@ -14,14 +14,14 @@
             background-color: #2E6DA4;
             overflow-x: hidden;
             transition: 0.5s;
-            padding-top: 30px;
-            padding-bottom: 30px;
+            padding-top: 25px;
+            padding-bottom: 25px;
         }
 
         .sidenav a {
-            padding: 8px 8px 8px 32px;
+            padding: 6px 8px 6px 32px;
             text-decoration: none;
-            font-size: 20px;
+            font-size: 19px;
             color: #dadada;
             display: block;
             transition: 0.3s;
@@ -57,11 +57,11 @@
 
         @media screen and (max-height: 450px) {
             .sidenav {
-                padding-top: 15px;
+                padding-top: 13px;
             }
 
             .sidenav a {
-                font-size: 18px;
+                font-size: 16px;
             }
         }
     </style>
@@ -83,6 +83,7 @@
     <a href="#" onclick="openTab('items')">Items</a>
     <hr>
     <a onclick="openTab('admin')">Admin</a>
+    <a href="/admin/logout">Logout</a>
 </div>
 
 <div hidden id="tab-welcome" class="tab">

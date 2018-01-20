@@ -10,5 +10,6 @@ route_list = [
     ("/newest", NewestMonth.NewestMonthHandler),
     ("/admin/login", Authentication.Login),
     ("/admin/logout", Authentication.Logout),
+    ("/admin/recover-password", Authentication.RecoverPassword),
     ("/admin", Admin.AdminHandler),
 ]
