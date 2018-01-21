@@ -73,7 +73,7 @@ class RecoverPassword(Handler):
                                                app_name=app_name)
 
                 email_message = mail.EmailMessage(
-                    sender="recover_password@{}.appspot.com".format(app_name),
+                    sender="recover_password@{}.appspotmail.com".format(app_name),
                     to=email,
                     subject="Recover password",
                     html=html_content

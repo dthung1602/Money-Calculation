@@ -94,8 +94,8 @@ class AdminHandler(Handler):
                 last_month_str = next_month_left = in_current_month = "N/A"
 
             # write
-            s = ";".join(map(str, [person.name, key.id(), total_spend, len(months), payment,
-                                   last_month_str, next_month_left, in_current_month]))
+            s = ";".join(map(unicode, [person.name, key.id(), total_spend, len(months), payment,
+                                       last_month_str, next_month_left, in_current_month]))
             self.write(s)
 
         except Exception as e:
@@ -123,7 +123,7 @@ class AdminHandler(Handler):
             people_in_month = ", ".join([person.get().name for person in month.people])
 
             # write
-            s = ";".join(map(str, [
+            s = ";".join(map(unicode, [
                 month.to_string_short(),
                 month.time_begin_format(),
                 month.time_end_format(),
