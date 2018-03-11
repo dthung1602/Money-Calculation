@@ -2,11 +2,10 @@
 #   Contains configurations for app
 #
 
-from google.appengine.api import app_identity
 
 app_config = {
     "debug": True,
-    "app-name": app_identity.get_application_id(),
+    "app-name": "money-calculation-m1522",
     "default-login-password": "password",
     "default-login-salt-length": 25,
     "default-login-password-length": 25,

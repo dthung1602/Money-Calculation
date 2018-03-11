@@ -133,6 +133,6 @@ function deleteItems(key) {
                 content += "%2C" + items[i].id.slice(5);
         }
     }
-    alert(content);
-    makeHttpRequest(reloadMonth, displayMonthInfoError, "/admin", content);
+    if (confirm("Are you sure to delete " + items.length + " item(s)?"))
+        makeHttpRequest(reloadMonth, displayMonthInfoError, "/admin", content);
 }

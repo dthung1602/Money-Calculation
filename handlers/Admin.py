@@ -105,6 +105,9 @@ class AdminHandler(Handler):
 
     def new_person(self):
         name = self.request.get("name")
+        print "------------------"
+        print name
+        print "------------------"
         if not Person.validate_name(name):
             self.response.status = 409
             self.write(

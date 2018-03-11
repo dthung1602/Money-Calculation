@@ -58,6 +58,6 @@ function displayNewPersonError(error) {
 
 function createNewPerson() {
     var name = document.getElementById("name").value;
-    var content = "action=newperson&name=" + name;
+    var content = "action=newperson&name=" + encodeURIComponent(name);
     makeHttpRequest(addNewPerson, displayNewPersonError, "/admin", content)
 }
