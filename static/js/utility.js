@@ -1,11 +1,3 @@
-function openTab(tabName) {
-    var tabs = document.getElementsByClassName("tab");
-    for (var i = 0; i < tabs.length; i++) {
-        tabs[i].hidden = true;
-    }
-    document.getElementById("tab-" + tabName).hidden = false;
-}
-
 function makeHttpRequest(successFunction, displayErrorsFunction, path, content) {
     var request = new XMLHttpRequest();
 

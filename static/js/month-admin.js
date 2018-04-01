@@ -42,19 +42,24 @@ function getMonthInfo(key) {
 
 function displayItems(data) {
     data = data.split(";");
+    var month_key = data[0];
     var rows = "";
     var row =
-        "<tr>" +
-        "   <td class='col-sm-3'>{}</td>" +
+        "<tr id='item-row-{}' onmouseenter='showHideEditButton({}, false)' onmouseleave='showHideEditButton({}, true)'>" +
+        "   <td class='col-sm-2'>{}</td>" +
+        "   <td class='col-sm-2'>{}</td>" +
         "   <td>{}</td>" +
-        "   <td>{}</td>" +
-        "   <td>{}</td>" +
-        "   <td><input type='checkbox' id='item-{}' onclick='checkSelectAll()'></td>" +
+        "   <td class='col-sm-2'>{}</td>" +
+        "   <td class='col-sm-3'>" +
+        "       <input type='checkbox' id='item-{}' onclick='checkSelectAll()'>" +
+        "       <span style='padding-left: 15px' id='edit-btn-{}' hidden><button onclick='startEdit({})' class='btn btn-default'>Edit</button></span>" +
+        "   </td>" +
         "</tr>";
 
     for (var i = 1; i < data.length; i++) {
-        var arr = data[i].split("|");
-        arr.push((i - 1).toString());
+        var ii = (i - 1).toString();
+        var arr = [ii, ii, ii];
+        arr = arr.concat(data[i].split("|"), [ii, ii, ii]);
         rows += simpleFormat(row, arr);
     }
 
@@ -77,7 +82,7 @@ function displayItems(data) {
         "   <button class='btn btn-primary' onclick='deleteItems(\"{}\")'>Delete</button>" +
         "</div>";
 
-    document.getElementById("items").innerHTML = simpleFormat(table, rows, data[0], data[0]);
+    document.getElementById("items").innerHTML = simpleFormat(table, rows, month_key, month_key);
 }
 
 function displayItemsError(error) {
@@ -135,4 +140,57 @@ function deleteItems(key) {
     }
     if (confirm("Are you sure to delete " + items.length + " item(s)?"))
         makeHttpRequest(reloadMonth, displayMonthInfoError, "/admin", content);
+}
+
+// ----------------------- edit ----------------------------
+editting = false;
+oldData = null;
+
+function showHideEditButton(num, hidden) {
+    if (!editting)
+        document.getElementById("edit-btn-" + num).hidden = hidden;
+}
+
+function startEdit(num) {
+    var row = document.getElementById("item-row-" + num);
+
+    window.editting = true;
+    window.oldData = row.innerHTML;
+
+    var row_content =
+        "<tr onmouseenter='showHideEditButton({}, false)' onmouseleave='showHideEditButton({}, true)'>" +
+        "<form method='post' action='/admin'>" +
+        "   <input type='hidden' name='action' value='edititem'>" +
+        "   <input type='hidden' name='item' value='{}'>" +
+        "   <td class='col-sm-2'>" +
+        "       <input type='date' name='date' value='{}'>" +
+        "       <input type='time' name='time' value='{}'>" +
+        "   </td>" +
+        "   <td class='col-sm-2'>" +
+        "       <select name='buyer'>{}</select>" +
+        "   </td>" +
+        "   <td>" +
+        "       <input type='text' name='what' value='{}'>" +
+        "   </td>" +
+        "   <td class='col-sm-2'>" +
+        "       <input type='text' name='price' value='{}' pattern='^[0-9 \\+\\-\\*\\/\\(\\)]+$'>" +
+        "   </td>" +
+        "   <td class='col-sm-3'>" +
+        "       <button onclick='saveItem({})' class='btn btn-default'>Save</button>" +
+        "       <button onclick='cancelSaveItem({})' class='btn btn-default'>Cancel</button>" +
+        "   </td>" +
+        "</form>" +
+        "</tr>";
+
+    row.innerHTML = row_content;
+}
+
+function saveItem(num) {
+    alert("save " + num);
+}
+
+function cancelSaveItem(num) {
+    // document.getElementById("edit-row-" + num).innerHTML = window.oldData
+    window.oldData = null;
+    window.editting = false;
 }
