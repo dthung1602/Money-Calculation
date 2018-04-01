@@ -37,7 +37,6 @@ class Login(Handler):
                 # login cookie has the value of the hashed password
                 if self.request.get("remember"):
                     expire_date = datetime.now() + timedelta(30)
-                    print(expire_date)
                 else:
                     expire_date = None
                 self.response.set_cookie("login", admin_account.hashed_password, expires=expire_date)

@@ -105,9 +105,6 @@ class AdminHandler(Handler):
 
     def new_person(self):
         name = self.request.get("name")
-        print "------------------"
-        print name
-        print "------------------"
         if not Person.validate_name(name):
             self.response.status = 409
             self.write(
@@ -172,7 +169,6 @@ class AdminHandler(Handler):
         try:
             month = Key(urlsafe=self.request.get("key")).get()
             items_to_del = set(map(int, self.request.get("items").split(",")))
-            print(items_to_del)
 
             items = [month.items[i] for i in set(range(len(month.items))) - items_to_del]
 
