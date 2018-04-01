@@ -137,8 +137,10 @@ function displayEmailError(error) {
 }
 
 function deleteEmail(email) {
-    var content = "action=deleteemail&email=" + encodeURIComponent(email);
-    makeHttpRequest(deleteElementById, displayEmailError, "/admin", content);
+    if (confirm("Delete admin email '" + email + "' ?")) {
+        var content = "action=deleteemail&email=" + encodeURIComponent(email);
+        makeHttpRequest(deleteElementById, displayEmailError, "/admin", content);
+    }
 }
 
 function addEmailToList(email) {
