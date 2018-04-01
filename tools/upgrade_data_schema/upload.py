@@ -109,7 +109,7 @@ def convert(file_name):
     # add month by month, from old to new
     print "Start creating months"
     for month in months:
-        print "Month: " + datetime.ctime(month.time_begin)
+        print "\nMonth: " + datetime.ctime(month.time_begin)
 
         # create new month
         param = {

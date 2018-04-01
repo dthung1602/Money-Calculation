@@ -4,6 +4,7 @@ export PROJECT_ROOT='/media/hung/DATA1/PYTHON/Workspace/MoneyCalculation'
 export PYTHONPATH=`which python`
 export PYTHONPATH=${GAE_SDK_ROOT}:${PROJECT_ROOT}:${PYTHONPATH}
 export PICKLE_FILE='pickle_file.dat'
+export PYTHONUNBUFFERED='true'
 
 echo "Start downloading old data ..."
 export GOOGLE_APPLICATION_CREDENTIALS='../../../GoogleAppEngine/WebApp-546d92efe094.json'
@@ -15,7 +16,7 @@ if [[ $? != 0 ]]; then
     exit 1
 fi
 
-echo "Start uploading old data ..."
+echo -e "\nStart uploading new data ..."
 export GOOGLE_APPLICATION_CREDENTIALS='../remote_api/MoneyCalculation-557f48420bfc.json'
 export APP_ID='money-calculation-m1522'
 python upload.py
