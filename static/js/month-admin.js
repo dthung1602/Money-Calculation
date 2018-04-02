@@ -12,7 +12,7 @@ function displayMonthInfo(info) {
         "<tr><td>End date</td><td>{}</td></tr>" +
         "<tr><td>Previous month</td><td>{}</td></tr>" +
         "<tr><td>Next month</td><td>{}</td></tr>" +
-        "<tr><td>People in month</td><td>{}</td></tr>" +
+        "<tr><td>People in month</td><td id='people-in-month'>{}</td></tr>" +
         "<tr><td>Total</td><td>{}</td></tr>" +
         "<tr><td>Average</td><td>{}</td></tr>" +
         "</tbody>" +
@@ -156,15 +156,44 @@ function startEdit(num) {
 
     window.editting = true;
     window.oldData = row.innerHTML;
+    var tds = row.getElementsByTagName("td");
 
+    // date
+    var oldDate = tds[0].innerText.split("/").reverse().join("-");
+
+    // buyer
+    var oldBuyerName = tds[1].innerText;
+    var selectContent = "";
+    var validNames = document.getElementById("people-in-month").innerText.split(", ");
+    for (var i = 0; i < validNames.length; i++) {
+        //FIXME
+        alert(personNameToKey);
+        if (oldBuyerName !== validNames[i]) {
+            selectContent += simpleFormat("<option value='{}'>{}</option>",
+                personNameToKey[validNames[i]],
+                validNames[i]
+            )
+        } else {
+            selectContent += simpleFormat("<option value='{}' selected>{}</option>",
+                personNameToKey[validNames[i]],
+                validNames[i]
+            )
+        }
+    }
+
+    // what & price
+    var oldWhat = tds[2].innerText;
+    var oldPrice = tds[3].innerText;
+
+    // create content
     var row_content =
-        "<tr onmouseenter='showHideEditButton({}, false)' onmouseleave='showHideEditButton({}, true)'>" +
+        "<tr id='edit-row-{}'>" +
         "<form method='post' action='/admin'>" +
         "   <input type='hidden' name='action' value='edititem'>" +
         "   <input type='hidden' name='item' value='{}'>" +
         "   <td class='col-sm-2'>" +
         "       <input type='date' name='date' value='{}'>" +
-        "       <input type='time' name='time' value='{}'>" +
+        "       <input type='time' name='time' value='16:00'>" +
         "   </td>" +
         "   <td class='col-sm-2'>" +
         "       <select name='buyer'>{}</select>" +
@@ -182,7 +211,7 @@ function startEdit(num) {
         "</form>" +
         "</tr>";
 
-    row.innerHTML = row_content;
+    row.innerHTML = simpleFormat(row_content, [num, num, oldDate, selectContent, oldWhat, oldPrice]);
 }
 
 function saveItem(num) {
@@ -190,7 +219,7 @@ function saveItem(num) {
 }
 
 function cancelSaveItem(num) {
-    // document.getElementById("edit-row-" + num).innerHTML = window.oldData
+    document.getElementById("edit-row-" + num).innerHTML = window.oldData;
     window.oldData = null;
     window.editting = false;
 }

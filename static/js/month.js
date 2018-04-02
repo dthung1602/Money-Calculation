@@ -56,7 +56,7 @@ function updateMoneyUsages(buyerKey, price) {
     var buyerSpend = document.getElementById("spend-" + buyerKey);
     var buyerMoneyToPay = document.getElementById("pay-" + buyerKey);
     buyerSpend.innerHTML = (parseInt(buyerSpend.innerHTML) + price).toString();
-    buyerMoneyToPay.innerHTML = (parseInt(buyerMoneyToPay.innerText) - price).toString();
+    buyerMoneyToPay.innerHTML = (parseFloat(buyerMoneyToPay.innerText) - price).toString();
 
     // update for others
     var avgPrice = price / numberOfPeople;
@@ -66,7 +66,7 @@ function updateMoneyUsages(buyerKey, price) {
         var roundup = document.getElementById("roundup-" + people[i]);
         var nml = document.getElementById("nml-" + people[i]);
 
-        var mtp = parseInt(moneyToPay.innerText) + avgPrice;
+        var mtp = parseFloat(moneyToPay.innerText) + avgPrice;
         var ru = Math.ceil(mtp / 10) * 10;
 
         moneyToPay.innerHTML = mtp.toFixed(2).toString();

@@ -185,14 +185,21 @@
 
 </div>
 
+<script type="javascript">
+    alert("OK");
+    var numberOfPeople = "{{ buyers | length }}";
+    var people = [
+        {% for buyer in buyers %}
+        "{{buyer.key}}",
+        {% endfor %}
+    ];
+</script>
+
 <script src="/static/js/admin.js"></script>
 <script src="/static/js/utility.js"></script>
 <script src="/static/js/people.js"></script>
 <script src="/static/js/month-admin.js"></script>
 
-<script>
-
-</script>
 
 </body>
 </html>
