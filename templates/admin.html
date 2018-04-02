@@ -185,14 +185,13 @@
 
 </div>
 
-<script type="javascript">
-    alert("OK");
-    var numberOfPeople = "{{ buyers | length }}";
-    var people = [
-        {% for buyer in buyers %}
-        "{{buyer.key}}",
+<script>
+    var numberOfPeople = {{ people | length }};
+    var personNameToKey = {
+        {% for person in people %}
+            "{{ person.name }}": "{{ person.key.urlsafe() }}",
         {% endfor %}
-    ];
+    };
 </script>
 
 <script src="/static/js/admin.js"></script>

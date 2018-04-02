@@ -100,6 +100,7 @@ function listItems(key) {
 //----------------- reload -------------------
 
 function reloadMonth(key) {
+    window.editting = false;
     getMonthInfo(key);
     setTimeout(listItems, 200, key);
 }
@@ -152,6 +153,7 @@ function showHideEditButton(num, hidden) {
 }
 
 function startEdit(num) {
+    showHideEditButton(num, true);
     var row = document.getElementById("item-row-" + num);
 
     window.editting = true;
@@ -166,8 +168,6 @@ function startEdit(num) {
     var selectContent = "";
     var validNames = document.getElementById("people-in-month").innerText.split(", ");
     for (var i = 0; i < validNames.length; i++) {
-        //FIXME
-        alert(personNameToKey);
         if (oldBuyerName !== validNames[i]) {
             selectContent += simpleFormat("<option value='{}'>{}</option>",
                 personNameToKey[validNames[i]],
@@ -187,7 +187,6 @@ function startEdit(num) {
 
     // create content
     var row_content =
-        "<tr id='edit-row-{}'>" +
         "<form method='post' action='/admin'>" +
         "   <input type='hidden' name='action' value='edititem'>" +
         "   <input type='hidden' name='item' value='{}'>" +
@@ -208,18 +207,17 @@ function startEdit(num) {
         "       <button onclick='saveItem({})' class='btn btn-default'>Save</button>" +
         "       <button onclick='cancelSaveItem({})' class='btn btn-default'>Cancel</button>" +
         "   </td>" +
-        "</form>" +
-        "</tr>";
+        "</form>";
 
-    row.innerHTML = simpleFormat(row_content, [num, num, oldDate, selectContent, oldWhat, oldPrice]);
+    row.innerHTML = simpleFormat(row_content, num, oldDate, selectContent, oldWhat, oldPrice, num, num);
 }
 
 function saveItem(num) {
-    alert("save " + num);
+    
 }
 
 function cancelSaveItem(num) {
-    document.getElementById("edit-row-" + num).innerHTML = window.oldData;
+    document.getElementById("item-row-" + num).innerHTML = window.oldData;
     window.oldData = null;
     window.editting = false;
 }

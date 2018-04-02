@@ -13,6 +13,10 @@ function makeHttpRequest(successFunction, displayErrorsFunction, path, content) 
                 if (displayErrorsFunction != null)
                     displayErrorsFunction("Internal server error. Please try again later.");
                 break;
+            case 0:
+                if (displayErrorsFunction != null)
+                    displayErrorsFunction("Cannot connect to server.");
+                break;
             default:
                 if (displayErrorsFunction != null)
                     displayErrorsFunction(request.responseText);
