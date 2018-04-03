@@ -53,15 +53,20 @@ class Month(ndb.Model):
         return m[0] if len(m) > 0 else None
 
     @classmethod
-    def end_month(cls):
+    def end_month(cls, new_month_key=None):
         """
             End current month if it is not ended
             :return current month
         """
         month = cls.get_current_month()
-        if month and not month.time_end:
+        if not month:
+            return
+
+        month.next_month = new_month_key
+        if not month.time_end:
             month.time_end = datetime.now()
-            month.put()
+
+        month.put()
         return month
 
     @classmethod
@@ -71,12 +76,10 @@ class Month(ndb.Model):
         people_keys = [ndb.Key(urlsafe=url_string) for url_string in people_key_strings]
         people = ndb.get_multi(people_keys)
 
-        # get last month
-        prev_month = cls.end_month()
-
         # new month
+        # month must be put to have key
         new_month = Month(
-            prev_month=prev_month.key if prev_month else None,
+            prev_month=None,
             next_month=None,
             people=people_keys,
             money_usages=[],
@@ -85,9 +88,8 @@ class Month(ndb.Model):
         new_month.put()
 
         # end prev month
-        if prev_month:
-            prev_month.next_month = new_month.key
-            prev_month.put()
+        prev_month = cls.end_month(new_month.key)
+        new_month.prev_month = prev_month.key
 
         # create money usages
         money_usages = []
@@ -101,51 +103,41 @@ class Month(ndb.Model):
         ndb.put_multi(money_usages)
         money_usages = [money_usage.key for money_usage in money_usages]
         new_month.money_usages = money_usages
+        new_month.put()
 
         # update last money usage of people
+        # and update next_money_usage
+        cache = []
         for person, money_usage in zip(people, money_usages):
+            if person.last_money_usage:
+                lmu = person.last_money_usage.get()
+                lmu.next_money_usage = money_usage
+                cache.append(lmu)
             person.last_money_usage = money_usage
-        ndb.put_multi(people)
+        ndb.put_multi(people + cache)
 
-        # put new month, return
-        new_month.put()
         ndb.sleep(0.7)
         return new_month
 
     def update(self):
-        """
-            Recalculate properties of month when items is modified
-        """
+        """Recalculate properties of month when items are modified/deleted"""
+
         self.spend = sum(item.price for item in self.items)
         self.average = self.spend * 1.0 / self.number_of_people
-
-        mu = ndb.get_multi(self.money_usages)
-        for money_usage in mu:
-            money_usage.update(self)
-        ndb.put_multi(mu)
-
         self.put()
 
-    def update_chain(self):
-        """Update this month and all months after it"""
+        money_usages = ndb.get_multi(self.money_usages)
+        for mu in money_usages:
+            mu.update(self)
 
-        # load all objects
+        ndb.sleep(0.1)
+
+    def update_chain(self):
+        """Update this month and all following"""
+
         months = Month.query().filter(Month.time_begin >= self.time_begin).fetch()
         for month in months:
-            month.muos = ndb.get_multi(month.money_usages)  # get money usage objects
-
-        # update
-        for month in months:
-            month.spend = sum(item.price for item in month.items)
-            month.average = month.spend * 1.0 / month.number_of_people
-            for money_usage in self.money_usages:
-                money_usage.get().update_chain(month, months[months.index(month) + 1:])
-
-        # put
-        ndb.put_multi(months)
-        for month in months:
-            ndb.put_multi(month.muos)
-        ndb.sleep(1)
+            month.update()
 
     @classmethod
     def update_all(cls):

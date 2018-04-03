@@ -23,33 +23,35 @@ class MoneyUsage(ndb.Model):
     last_month_left = ndb.FloatProperty(required=True)
     next_month_left = ndb.ComputedProperty(compute_next_month_left)
 
+    next_money_usage = ndb.KeyProperty()
+
     money_spend = ndb.IntegerProperty(default=0, required=True)  # actual spending in month
     money_to_pay = ndb.FloatProperty(default=0.0, required=True)  # money to pay, after subtracting last month left, ...
     money_round_up = ndb.ComputedProperty(compute_round_up)  # actual money to pay, round up for convenience
 
-    def update(self, month):
+    def update(self, month=None):
         """
-            Recalculate properties of money usage
+            Recalculate properties of this money usage & following money usages
             :param month: month object which self belongs to
+                          month might has changed without being put -> must be passed so that new info is used
+                          if month is not passed, month will be loaded from db
         """
 
+        if not month:
+            month = self.month.get()
+
+        # update info from month
         self.money_spend = sum(item.price for item in month.items if item.buyer == self.person)
         self.money_to_pay = month.average - self.money_spend - self.last_month_left
 
-    def update_chain(self, month, months):
-        """
-            Update money usage and last_month_left of next month
-            :param month: month object which self belongs to
-            :param months: list of month objects after this month
+        # update next money usages
+        money_usages = [self]
+        mu = self
+        while mu.next_money_usage:
+            next_mu = mu.next_money_usage.get()
+            next_mu.last_month_left = mu.next_month_left
+            mu = next_mu
+            money_usages.append(mu)
 
-        """
-        # update this month
-        self.update(month)
-
-        # update last_month_left
-        for next_month in months:  # search for next month contains the same person
-            if self.person in next_month.people:
-                for muo in next_month.muos:  # search for money usage object in that month of the same person
-                    if muo.person == self.person:
-                        muo.last_month_left = self.next_month_left
-                        return
+        ndb.put_multi(money_usages)
+        ndb.sleep(0.1)

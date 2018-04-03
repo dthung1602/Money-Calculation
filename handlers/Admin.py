@@ -212,7 +212,7 @@ class AdminHandler(Handler):
             # save & response
             month.put()
             ndb.sleep(0.1)
-            month.update_chain()
+            month.update()
             self.write(month_key)
 
         except Exception as e:
@@ -228,7 +228,7 @@ class AdminHandler(Handler):
             items = [month.items[i] for i in set(range(len(month.items))) - items_to_del]
 
             month.items = items
-            month.update_chain()
+            month.update()
 
             # write
             self.write(month.key.urlsafe())
