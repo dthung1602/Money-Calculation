@@ -8,7 +8,8 @@ function displayMonthInfo(info) {
         "<tr><th colspan='2'><h3><strong>{}</strong></h3></th></tr>" +
         "</thead>" +
         "<tbody>" +
-        "<tr><td class='col-sm-3'>Start date</td><td>{}</td></tr>" +
+        "<tr><td class='col-sm-3'>Key</td><td id='month-key'>{}</td></tr>" +
+        "<tr><td>Start date</td><td>{}</td></tr>" +
         "<tr><td>End date</td><td>{}</td></tr>" +
         "<tr><td>Previous month</td><td>{}</td></tr>" +
         "<tr><td>Next month</td><td>{}</td></tr>" +
@@ -42,7 +43,10 @@ function getMonthInfo(key) {
 
 function displayItems(data) {
     data = data.split(";");
-    var month_key = data[0];
+    for (var i = 0; i < data.length; i++)
+        data[i] = decodeURIComponent(data[i]);
+
+    var month_key = document.getElementById("month-key").innerText;
     var rows = "";
     var row =
         "<tr id='item-row-{}' onmouseenter='showHideEditButton({}, false)' onmouseleave='showHideEditButton({}, true)'>" +
@@ -56,10 +60,15 @@ function displayItems(data) {
         "   </td>" +
         "</tr>";
 
-    for (var i = 1; i < data.length; i++) {
-        var ii = (i - 1).toString();
+    for (i = 0; i < data.length; i++) {
+        data[i] = data[i].split("|");
+        for (var j = 0; j < data[i].length; j++)
+            data[i][j] = decodeURIComponent(data[i][j]);
+
+        var ii = i.toString();
         var arr = [ii, ii, ii];
-        arr = arr.concat(data[i].split("|"), [ii, ii, ii]);
+
+        arr = arr.concat(data[i], [ii, ii, ii]);
         rows += simpleFormat(row, arr);
     }
 
@@ -100,7 +109,7 @@ function listItems(key) {
 //----------------- reload -------------------
 
 function reloadMonth(key) {
-    window.editting = false;
+    window.editting = -1;
     getMonthInfo(key);
     setTimeout(listItems, 200, key);
 }
@@ -127,11 +136,18 @@ function checkSelectAll() {
 //----------------- delete -------------------
 
 function deleteItems(key) {
+    if (window.editting !== -1) {
+        alert("You are editing an item.\nPlease save or cancel editing before deleting other items.")
+        return;
+    }
+
     var content = "action=deleteitems&key=" + key + "&items=";
     var items = document.querySelectorAll('[id^="item-"]');
+    var delItemsCount = 0;
     var first = true;
     for (var i = 0; i < items.length; i++) {
         if (items[i].checked) {
+            delItemsCount++;
             if (first) {
                 content += items[i].id.slice(5);
                 first = false;
@@ -139,16 +155,16 @@ function deleteItems(key) {
                 content += "%2C" + items[i].id.slice(5);
         }
     }
-    if (confirm("Are you sure to delete " + items.length + " item(s)?"))
+    if (delItemsCount > 0 && confirm("Are you sure to delete " + delItemsCount + " item(s)?"))
         makeHttpRequest(reloadMonth, displayMonthInfoError, "/admin", content);
 }
 
 // ----------------------- edit ----------------------------
-editting = false;
+editting = -1;
 oldData = null;
 
 function showHideEditButton(num, hidden) {
-    if (!editting)
+    if (editting === -1)
         document.getElementById("edit-btn-" + num).hidden = hidden;
 }
 
@@ -156,12 +172,12 @@ function startEdit(num) {
     showHideEditButton(num, true);
     var row = document.getElementById("item-row-" + num);
 
-    window.editting = true;
+    window.editting = num;
     window.oldData = row.innerHTML;
     var tds = row.getElementsByTagName("td");
 
     // date
-    var oldDate = tds[0].innerText.split("/").reverse().join("-");
+    var oldDate = "20" + tds[0].innerText.split("/").reverse().join("-");
 
     // buyer
     var oldBuyerName = tds[1].innerText;
@@ -187,37 +203,46 @@ function startEdit(num) {
 
     // create content
     var row_content =
-        "<form method='post' action='/admin'>" +
-        "   <input type='hidden' name='action' value='edititem'>" +
-        "   <input type='hidden' name='item' value='{}'>" +
-        "   <td class='col-sm-2'>" +
-        "       <input type='date' name='date' value='{}'>" +
-        "       <input type='time' name='time' value='16:00'>" +
-        "   </td>" +
-        "   <td class='col-sm-2'>" +
-        "       <select name='buyer'>{}</select>" +
-        "   </td>" +
-        "   <td>" +
-        "       <input type='text' name='what' value='{}'>" +
-        "   </td>" +
-        "   <td class='col-sm-2'>" +
-        "       <input type='text' name='price' value='{}' pattern='^[0-9 \\+\\-\\*\\/\\(\\)]+$'>" +
-        "   </td>" +
-        "   <td class='col-sm-3'>" +
-        "       <button onclick='saveItem({})' class='btn btn-default'>Save</button>" +
-        "       <button onclick='cancelSaveItem({})' class='btn btn-default'>Cancel</button>" +
-        "   </td>" +
-        "</form>";
+        "<td class='col-sm-2'>" +
+        "    <input type='date' name='date' id='edit-date' value='{}'>" +
+        "</td>" +
+        "<td class='col-sm-2'>" +
+        "    <select name='buyer' id='edit-buyer'>{}</select>" +
+        "</td>" +
+        "<td>" +
+        "    <input type='text' name='what' id='edit-what' value='{}'>" +
+        "</td>" +
+        "<td class='col-sm-2'>" +
+        "    <input type='text' name='price' id='edit-price' value='{}' pattern='^[0-9 \\+\\-\\*\\/\\(\\)]+$'>" +
+        "</td>" +
+        "<td class='col-sm-3'>" +
+        "    <button onclick='saveItem()' class='btn btn-default'>Save</button>" +
+        "    <button onclick='cancelSaveItem()' class='btn btn-default'>Cancel</button>" +
+        "</td>";
 
-    row.innerHTML = simpleFormat(row_content, num, oldDate, selectContent, oldWhat, oldPrice, num, num);
+    row.innerHTML = simpleFormat(row_content, oldDate, selectContent, oldWhat, oldPrice);
 }
 
-function saveItem(num) {
-    
+function saveItem() {
+    var month_key = document.getElementById("month-key").innerText;
+
+    var date = encodeURIComponent(document.getElementById("edit-date").value);
+    var buyer = encodeURIComponent(document.getElementById("edit-buyer").value);
+    var what = encodeURIComponent(document.getElementById("edit-what").value);
+    var price = encodeURIComponent(document.getElementById("edit-price").value);
+
+    var content = "action=edititem" +
+        "&key=" + month_key +
+        "&item=" + window.editting +
+        "&date=" + date +
+        "&buyer=" + buyer +
+        "&what=" + what +
+        "&price=" + price;
+    makeHttpRequest(reloadMonth, alert, "/admin", content)
 }
 
-function cancelSaveItem(num) {
-    document.getElementById("item-row-" + num).innerHTML = window.oldData;
+function cancelSaveItem() {
+    document.getElementById("item-row-" + window.editting).innerHTML = window.oldData;
     window.oldData = null;
-    window.editting = false;
+    window.editting = -1;
 }

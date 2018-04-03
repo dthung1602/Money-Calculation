@@ -1,3 +1,6 @@
+from cgi import escape as escape_html_tags
+from urllib import quote
+
 from google.appengine.ext import ndb
 from google.appengine.ext.ndb import Key
 
@@ -35,6 +38,7 @@ class AdminHandler(Handler):
                 "newperson": self.new_person,
                 "getmonthinfo": self.get_month_info,
                 "listitems": self.list_items,
+                "edititem": self.edit_item,
                 "deleteitems": self.delete_items,
                 "deleteemail": self.delete_email,
                 "createemail": self.create_email,
@@ -117,7 +121,8 @@ class AdminHandler(Handler):
 
     def get_month_info(self):
         try:
-            month = Key(urlsafe=self.request.get("key")).get()
+            month_key = self.request.get("key")
+            month = Key(urlsafe=month_key).get()
             prev_month = month.prev_month.get().to_string_short() if month.prev_month else "N/A"
             next_month = month.next_month.get().to_string_short() if month.next_month else "N/A"
             people_in_month = ", ".join([person.get().name for person in month.people])
@@ -125,6 +130,7 @@ class AdminHandler(Handler):
             # write
             s = ";".join(map(unicode, [
                 month.to_string_short(),
+                month_key,
                 month.time_begin_format(),
                 month.time_end_format(),
                 prev_month,
@@ -149,21 +155,70 @@ class AdminHandler(Handler):
 
             items = []
             for item in month.items:
-                items.append("|".join([
-                    item.date.strftime("%d/%m/%y"),
-                    key_to_people[item.buyer].name,
-                    item.what,
-                    str(item.price)
-                ]))
+                items.append(quote("|".join([
+                    quote(item.date.strftime("%d/%m/%y")),
+                    quote(key_to_people[item.buyer].name.encode("utf8")),
+                    quote(escape_html_tags(item.what.encode("utf8"))),
+                    quote(str(item.price))
+                ])))
+                print(escape_html_tags(item.what))
 
             # write
-            s = ";".join([month.key.urlsafe()] + items)
-            self.write(s)
+            self.write(";".join(items))
 
         except Exception as e:
             print(e)
             self.response.status = 409
             self.write("Can not list items in this month. Please reload this page or try again later")
+
+    def edit_item(self):
+        try:
+            item = int(self.request.get("item"))
+
+            month_key = self.request.get("key")
+            month = Key(urlsafe=month_key).get()
+
+            # date
+            raw_date = self.request.get("date")
+            date = datetime.strptime(raw_date, "%Y-%m-%d")
+
+            # buyer
+            buyer = Key(urlsafe=self.request.get("buyer"))
+            if buyer not in month.people:
+                raise ValueError
+
+            # what
+            what = self.request.get("what")
+            if len(what) == 0:
+                raise ValueError
+
+            # price
+            price = self.request.get("price")
+            try:
+                price = eval(price)
+                if price <= 0:
+                    raise ValueError
+            except Exception:
+                self.response.status = 409
+                self.write("Invalid price field")
+
+            # write changes to item & sort month.items
+            month.items[item].date = date
+            month.items[item].buyer = buyer
+            month.items[item].what = what
+            month.items[item].price = price
+            month.items.sort(key=lambda x: x.date, reverse=True)
+
+            # save & response
+            month.put()
+            ndb.sleep(0.1)
+            month.update_chain()
+            self.write(month_key)
+
+        except Exception as e:
+            print(e)
+            self.response.status = 409
+            self.write("One of item field is invalid.")
 
     def delete_items(self):
         try:
