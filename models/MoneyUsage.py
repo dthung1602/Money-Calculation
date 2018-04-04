@@ -26,7 +26,7 @@ class MoneyUsage(ndb.Model):
     next_money_usage = ndb.KeyProperty()
 
     money_spend = ndb.IntegerProperty(default=0, required=True)  # actual spending in month
-    money_to_pay = ndb.FloatProperty(default=0.0, required=True)  # money to pay, after subtracting last month left, ...
+    money_to_pay = ndb.FloatProperty(required=True)  # money to pay = month average - last month left - spend in month
     money_round_up = ndb.ComputedProperty(compute_round_up)  # actual money to pay, round up for convenience
 
     def update(self, month=None):
@@ -54,4 +54,3 @@ class MoneyUsage(ndb.Model):
             money_usages.append(mu)
 
         ndb.put_multi(money_usages)
-        ndb.sleep(0.1)

@@ -77,7 +77,7 @@ function updateMoneyUsages(buyerKey, price) {
 
 function addSuccess() {
     var buyerKey = document.getElementById("buyer").value;
-    var price = eval(document.getElementById("price").value);
+    var price = eval(document.getElementById("price").value); // fixme eval give 5/2 = 2.5
 
     addItemToTable(buyerKey, price);
     updateSummarize(price);

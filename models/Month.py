@@ -71,7 +71,10 @@ class Month(ndb.Model):
 
     @classmethod
     def new_month(cls, people_key_strings):
-        """ End current month, create and return a new month"""
+        """
+            End current month, create and return a new month
+            :return new month
+        """
 
         people_keys = [ndb.Key(urlsafe=url_string) for url_string in people_key_strings]
         people = ndb.get_multi(people_keys)
@@ -89,14 +92,16 @@ class Month(ndb.Model):
 
         # end prev month
         prev_month = cls.end_month(new_month.key)
-        new_month.prev_month = prev_month.key
+        new_month.prev_month = prev_month.key if prev_month else None
 
         # create money usages
         money_usages = []
         for person_key, person in zip(people_keys, people):
+            lml = person.get_last_month_left()
             money_usage = MoneyUsage(
                 person=person_key,
-                last_month_left=person.get_last_month_left(),
+                money_to_pay=-lml,
+                last_month_left=lml,
                 month=new_month.key
             )
             money_usages.append(money_usage)
@@ -107,18 +112,18 @@ class Month(ndb.Model):
 
         # update last money usage of people
         # and update next_money_usage
-        cache = []
         for person, money_usage in zip(people, money_usages):
             if person.last_money_usage:
                 lmu = person.last_money_usage.get()
                 lmu.next_money_usage = money_usage
-                cache.append(lmu)
+                lmu.put()
             person.last_money_usage = money_usage
-        ndb.put_multi(people + cache)
+        ndb.put_multi(people)
 
         ndb.sleep(0.7)
         return new_month
 
+    # TODO test this
     def update(self):
         """Recalculate properties of month when items are modified/deleted"""
 
@@ -133,7 +138,7 @@ class Month(ndb.Model):
         ndb.sleep(0.1)
 
     def update_chain(self):
-        """Update this month and all following"""
+        """Update this month and all following months"""
 
         months = Month.query().filter(Month.time_begin >= self.time_begin).fetch()
         for month in months:

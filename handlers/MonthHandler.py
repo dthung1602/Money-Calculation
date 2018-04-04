@@ -104,8 +104,6 @@ class MonthHandler(Handler):
         month.update()
         ndb.sleep(0.5)
 
-        self.render_month(month)
-
 
 class Buyer(object):
     def __init__(self, person, money_usage):
