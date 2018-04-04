@@ -49,7 +49,7 @@ function displayItems(data) {
     var month_key = document.getElementById("month-key").innerText;
     var rows = "";
     var row =
-        "<tr id='item-row-{}' onmouseenter='showHideEditButton({}, false)' onmouseleave='showHideEditButton({}, true)'>" +
+        "<tr id='row-item-{}' onmouseenter='showHideEditButton({}, false)' onmouseleave='showHideEditButton({}, true)'>" +
         "   <td class='col-sm-2'>{}</td>" +
         "   <td class='col-sm-2'>{}</td>" +
         "   <td>{}</td>" +
@@ -170,7 +170,7 @@ function showHideEditButton(num, hidden) {
 
 function startEdit(num) {
     showHideEditButton(num, true);
-    var row = document.getElementById("item-row-" + num);
+    var row = document.getElementById("row-item-" + num);
 
     window.editting = num;
     window.oldData = row.innerHTML;
@@ -242,7 +242,7 @@ function saveItem() {
 }
 
 function cancelSaveItem() {
-    document.getElementById("item-row-" + window.editting).innerHTML = window.oldData;
+    document.getElementById("row-item-" + window.editting).innerHTML = window.oldData;
     window.oldData = null;
     window.editting = -1;
 }
