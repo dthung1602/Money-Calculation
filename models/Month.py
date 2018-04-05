@@ -123,7 +123,6 @@ class Month(ndb.Model):
         ndb.sleep(0.7)
         return new_month
 
-    # TODO test this
     def update(self):
         """Recalculate properties of month when items are modified/deleted"""
 

@@ -161,7 +161,6 @@ class AdminHandler(Handler):
                     quote(escape_html_tags(item.what.encode("utf8"))),
                     quote(str(item.price))
                 ])))
-                print(escape_html_tags(item.what))
 
             # write
             self.write(";".join(items))
