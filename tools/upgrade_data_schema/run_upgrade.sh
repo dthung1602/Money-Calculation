@@ -16,6 +16,14 @@ if [[ $? != 0 ]]; then
     exit 1
 fi
 
+echo -e "\nPlease delete all old data in new database"
+echo "Visit https://console.cloud.google.com/datastore/settings?project=money-calculation-m1522"
+echo "Have you done that? (Y/n)"
+opt='n'
+while [[ ${opt} != 'y' && ${opt} != 'Y' ]]; do
+    read opt
+done
+
 echo -e "\nStart uploading new data ..."
 export GOOGLE_APPLICATION_CREDENTIALS='../remote_api/MoneyCalculation-557f48420bfc.json'
 export APP_ID='money-calculation-m1522'

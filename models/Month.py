@@ -53,20 +53,15 @@ class Month(ndb.Model):
         return m[0] if len(m) > 0 else None
 
     @classmethod
-    def end_month(cls, new_month_key=None):
+    def end_month(cls):
         """
             End current month if it is not ended
             :return current month
         """
         month = cls.get_current_month()
-        if not month:
-            return
-
-        month.next_month = new_month_key
-        if not month.time_end:
+        if month and not month.time_end:
             month.time_end = datetime.now()
-
-        month.put()
+            month.put()
         return month
 
     @classmethod
@@ -79,10 +74,12 @@ class Month(ndb.Model):
         people_keys = [ndb.Key(urlsafe=url_string) for url_string in people_key_strings]
         people = ndb.get_multi(people_keys)
 
+        # get last month
+        prev_month = cls.end_month()
+
         # new month
-        # month must be put to have key
         new_month = Month(
-            prev_month=None,
+            prev_month=prev_month.key if prev_month else None,
             next_month=None,
             people=people_keys,
             money_usages=[],
@@ -91,8 +88,9 @@ class Month(ndb.Model):
         new_month.put()
 
         # end prev month
-        prev_month = cls.end_month(new_month.key)
-        new_month.prev_month = prev_month.key if prev_month else None
+        if prev_month:
+            prev_month.next_month = new_month.key
+            prev_month.put()
 
         # create money usages
         money_usages = []
