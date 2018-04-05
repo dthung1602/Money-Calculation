@@ -6,6 +6,7 @@
 app_config = {
     "debug": True,
     "app-name": "money-calculation-m1522",
+    "version": "3.1",
     "default-login-password": "password",
     "default-login-salt-length": 25,
     "default-login-password-length": 25,

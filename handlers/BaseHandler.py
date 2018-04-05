@@ -1,6 +1,7 @@
 import webapp2
 
 from Error import jinja_env, error_4xx_names, error_5xx_names
+from config import app_config
 
 
 class Handler(webapp2.RequestHandler):
@@ -30,6 +31,7 @@ class Handler(webapp2.RequestHandler):
     @staticmethod
     def render_str(template, **kwargs):
         """Use jinja2 to render html to string"""
+        kwargs['version'] = app_config["version"]
         return jinja_env.get_template(template).render(**kwargs)
 
     def render(self, template, **kwargs):
